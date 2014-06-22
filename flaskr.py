@@ -2,6 +2,7 @@
 from flask import Flask, request, render_template
 from flask.ext.bootstrap import Bootstrap
 import json
+import re
 
 app = Flask(__name__)
 
@@ -23,6 +24,7 @@ def all_stations():
 def all_stations_in_rad(lat, lon, rad):
     return all_stations()
 
+@app.route('/REST/1.0/stations/info/<int:station_id>')
 
 # Riders
 
@@ -47,11 +49,17 @@ def user(name):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    if re.match('/REST',request.path):
+        return '{}', 404
+    else:
+        return render_template('404.html'), 404
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template('500.html'), 500
+    if re.match('/REST',request.path):
+        return '{}', 500
+    else:
+        return render_template('500.html'), 500
 
 if __name__ == '__main__':
     if debug:
