@@ -34,6 +34,11 @@ def stations_info(station_id):
     stations = json.load(db)
     return json.dumps(stations, ensure_ascii=True)
 
+@app.route('/REST/1.0/stations/reserve', methods=['POST'])
+def reserve_station():
+    # placeholder
+    return '{}'
+
 # Riders
 
 # Bikes
