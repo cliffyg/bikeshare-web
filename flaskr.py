@@ -60,6 +60,32 @@ def favorite_info(rider_id):
     stations = json.load(db)
     return json.dumps(stations, ensure_ascii=True)
 
+# POST /riders/favorite/add: stationid
+#   response: success or failure code
+@app.route('/REST/1.0/riders/favorites/add', methods=['POST'])
+def add_favorite():
+    # placeholder
+    return '{}'
+
+# POST /riders/favorite/remove: stationid
+#   response: success or failure code
+@app.route('/REST/1.0/riders/favorites/remove', methods=['POST'])
+def remove_favorite():
+    # placeholder
+    return '{}'
+
+# GET /riders/history: riderid
+#   response: array of tripid, time
+@app.route('/REST/1.0/riders/history/<int:rider_id>')
+def rider_history(rider_id):
+    s = 'data/history_' + str(rider_id) + '.json'
+    try:
+        db = open(s,'r')
+    except IOError:
+        return '{}', 404
+    data = json.load(db)
+    return json.dumps(data, ensure_ascii=True)
+
 # Bikes
 
 # Trips
