@@ -17,8 +17,8 @@ debug = False
 
 # Stations
 # =========
-# GET /stations/all: lat, long, radius
-#   response: array of station_id, lat, lon, zone_id, location tuples
+# Query:    GET /stations/all: lat, long, radius
+# Response: array of station_id, lat, lon, zone_id, location tuples
 @app.route('/REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>')
 def all_stations_in_rad(lat, lon, rad):
     return all_stations()
@@ -29,8 +29,8 @@ def all_stations():
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# GET /stations/info: station_id
-#   response: # bikes available, # of docks, location, fixed price, zone_id
+# Query:    GET /stations/info: station_id
+# Response: # bikes available, # of docks, location, fixed price, zone_id
 @app.route('/REST/1.0/stations/info/<int:station_id>')
 def stations_info(station_id):
     s = 'data/station_' + str(station_id) + '.json'
@@ -41,8 +41,8 @@ def stations_info(station_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# POST /stations/reserve: station_id, rider_id
-#   response: time, dock_id, bike_id
+# Query:    POST /stations/reserve: station_id, rider_id
+# Response: time, dock_id, bike_id
 @app.route('/REST/1.0/stations/reserve', methods=['POST'])
 def reserve_station():
     # placeholder
@@ -50,8 +50,8 @@ def reserve_station():
 
 # Riders
 # ========
-# GET /riders/info: rider_id
-#   response: f_name, l_name
+# Query:    GET /riders/info: rider_id
+# Response: f_name, l_name
 @app.route('/REST/1.0/riders/info/<int:rider_id>')
 def riders_info(rider_id):
     s = 'data/rider_' + str(rider_id) + '.json'
@@ -62,8 +62,8 @@ def riders_info(rider_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# GET /riders/favorites/info: riderid
-#   response: array of stationid, address
+# Query:    GET /riders/favorites/info: riderid
+# Response: array of stationid, address
 @app.route('/REST/1.0/riders/favorites/info/<int:rider_id>')
 def favorite_info(rider_id):
     s = 'data/favorite_' + str(rider_id) + '.json'
@@ -74,22 +74,22 @@ def favorite_info(rider_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# POST /riders/favorites/add: stationid
-#   response: success or failure code
+# Query:    POST /riders/favorites/add: stationid
+# Response: success or failure code
 @app.route('/REST/1.0/riders/favorites/add', methods=['POST'])
 def add_favorite():
     # placeholder
     return '{}'
 
-# POST /riders/favorites/remove: stationid
-#   response: success or failure code
+# Query:    POST /riders/favorites/remove: stationid
+# Response: success or failure code
 @app.route('/REST/1.0/riders/favorites/remove', methods=['POST'])
 def remove_favorite():
     # placeholder
     return '{}'
 
-# GET /riders/history: riderid
-#   response: array of tripid, time
+# Query:    GET /riders/history: riderid
+# Response: array of tripid, time
 @app.route('/REST/1.0/riders/history/<int:rider_id>')
 def rider_history(rider_id):
     s = 'data/history_' + str(rider_id) + '.json'
@@ -102,8 +102,8 @@ def rider_history(rider_id):
 
 # Bikes
 # ========
-# GET /bikes/active: lat, long, radius
-#   response: array of bike_id, lat, long tuples
+# Query:    GET /bikes/active: lat, long, radius
+# Response: array of bike_id, lat, long tuples
 @app.route('/REST/1.0/bikes/active/<float:lat>/<float:lon>/<float:rad>')
 def active_bikes_in_rad(lat, lon, rad):
     return active_bikes()
@@ -114,8 +114,8 @@ def active_bikes():
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# GET /bikes/info: bike_id
-#   response: lat, long, distance biked, total time, array of reports
+# Query:    GET /bikes/info: bike_id
+# Response: lat, long, distance biked, total time, array of reports
 @app.route('/REST/1.0/bikes/info/<int:bike_id>')
 def bike_info(bike_id):
     s = 'data/bike_' + str(bike_id) + '.json'
@@ -126,22 +126,22 @@ def bike_info(bike_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# POST /bikes/checkout: bike_id, rider_id
-#   resposne: trip_id
+# Query:    POST /bikes/checkout: bike_id, rider_id
+# Response: trip_id
 @app.route('/REST/1.0/bikes/checkout', methods=['POST'])
 def checkout_bike():
     # placeholder
     return '{}'
 
-# POST /bikes/checkin: bike_id, rider_id, station_id, trip_id
-#   response: success or failure code
+# Query:    POST /bikes/checkin: bike_id, rider_id, station_id, trip_id
+# Response: success or failure code
 @app.route('/REST/1.0/bikes/checkin', methods=['POST'])
 def checkin_bike():
     # placeholder
     return '{}'
 
-# POST /bikes/report: bike_id, rider_id, array of true false and description
-#   response: success or failure code
+# Query:    POST /bikes/report: bike_id, rider_id, array of bike status info
+# Response: success or failure code
 @app.route('/REST/1.0/bikes/report', methods=['POST'])
 def report_bike_damage():
     # placeholder
@@ -149,8 +149,8 @@ def report_bike_damage():
 
 # Trips
 # ========
-# GET /trips/info: trip_id
-#   response: start station_id, end station_id, date, array of lat, long
+# Query:    GET /trips/info: trip_id
+# Response: start station_id, end station_id, date, array of lat, long
 @app.route('/REST/1.0/trips/info/<int:trip_id>')
 def trip_info(trip_id):
     s = 'data/trip_' + str(trip_id) + '.json'
@@ -161,8 +161,8 @@ def trip_info(trip_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# POST /trips/point: trip_id, lat, long
-#   response: success or failure code
+# Query:    POST /trips/point: trip_id, lat, long
+# Response: success or failure code
 # For sending current location to db
 @app.route('/REST/1.0/trips/point', methods=['POST'])
 def add_trip_point():
