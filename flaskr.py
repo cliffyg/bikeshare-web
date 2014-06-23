@@ -101,8 +101,31 @@ def rider_history(rider_id):
     return json.dumps(data, ensure_ascii=True)
 
 # Bikes
+# ========
+# GET /bikes/active: lat, long, radius
+#   response: array of bike_id, lat, long tuples
+
+# GET /bikes/info: bike_id
+#   response: lat, long, distance biked, total time, array of reports
+
+# POST /bikes/checkout: bike_id, rider_id
+#   resposne: trip_id
+
+# POST /bikes/checkin: bike_id, rider_id, station_id, trip_id
+#   response: success or failure code
+
+# POST /bikes/report: bike_id, rider_id, array of true false with description at end?
+#   response: success or failure code
+
 
 # Trips
+# ========
+# GET /trips/info: trip_id
+#   response: start station_id, end station_id, date, array of point data for path (lat, lon)
+
+# POST /trips/point: trip_id, lat, long
+#   response: success or failure code
+# For sending current location to db
 
 
 @app.route('/')
