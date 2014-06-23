@@ -40,6 +40,15 @@ def reserve_station():
     return '{}'
 
 # Riders
+@app.route('/REST/1.0/riders/info/<int:rider_id>')
+def riders_info(rider_id):
+    s = 'data/rider_' + str(rider_id) + '.json'
+    try:
+        db = open(s,'r')
+    except IOError:
+        return '{}', 404
+    stations = json.load(db)
+    return json.dumps(stations, ensure_ascii=True)
 
 # Bikes
 
