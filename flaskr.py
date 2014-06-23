@@ -23,7 +23,7 @@ debug = False
 def all_stations_in_rad(lat, lon, rad):
     return all_stations()
 # This is just temporary so we have something to show.
-@app.route('/REST/1.0/stations/all/')
+@app.route('/REST/1.0/stations/all')
 def all_stations():
     db = open('data/stations.json','r')
     data = json.load(db)
