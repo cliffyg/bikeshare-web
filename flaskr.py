@@ -19,6 +19,10 @@ debug = False
 # =========
 # GET /stations/all: lat, long, radius
 #   response: array of station_id, lat, lon, zone_id, location tuples
+@app.route('/REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>')
+def all_stations_in_rad(lat, lon, rad):
+    return all_stations()
+# This is just temporary so we have something to show.
 @app.route('/REST/1.0/stations/all/')
 def all_stations():
     db = open('data/stations.json','r')
@@ -27,10 +31,6 @@ def all_stations():
 
 # GET /stations/info: station_id
 #   response: # bikes available, # of docks, location, fixed price, zone_id
-@app.route('/REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>')
-def all_stations_in_rad(lat, lon, rad):
-    return all_stations()
-# This is just temporary so we have something to show.
 @app.route('/REST/1.0/stations/info/<int:station_id>')
 def stations_info(station_id):
     s = 'data/station_' + str(station_id) + '.json'
@@ -62,7 +62,7 @@ def riders_info(rider_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# GET /riders/favorite/info: riderid
+# GET /riders/favorites/info: riderid
 #   response: array of stationid, address
 @app.route('/REST/1.0/riders/favorites/info/<int:rider_id>')
 def favorite_info(rider_id):
@@ -74,14 +74,14 @@ def favorite_info(rider_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# POST /riders/favorite/add: stationid
+# POST /riders/favorites/add: stationid
 #   response: success or failure code
 @app.route('/REST/1.0/riders/favorites/add', methods=['POST'])
 def add_favorite():
     # placeholder
     return '{}'
 
-# POST /riders/favorite/remove: stationid
+# POST /riders/favorites/remove: stationid
 #   response: success or failure code
 @app.route('/REST/1.0/riders/favorites/remove', methods=['POST'])
 def remove_favorite():
