@@ -11,9 +11,9 @@ bootstrap = Bootstrap(app)
 # Set debug mode.
 debug = False
 
-# ========
+# ================
 # REST API function definitions
-# ========
+# ================
 
 # Stations
 # =========
@@ -140,7 +140,7 @@ def checkin_bike():
     # placeholder
     return '{}'
 
-# POST /bikes/report: bike_id, rider_id, array of true false with description at end?
+# POST /bikes/report: bike_id, rider_id, array of true false and description
 #   response: success or failure code
 @app.route('/REST/1.0/bikes/report', methods=['POST'])
 def report_bike_damage():
@@ -150,12 +150,28 @@ def report_bike_damage():
 # Trips
 # ========
 # GET /trips/info: trip_id
-#   response: start station_id, end station_id, date, array of point data for path (lat, lon)
+#   response: start station_id, end station_id, date, array of lat, long
+@app.route('/REST/1.0/trips/info/<int:trip_id>')
+def trip_info(trip_id):
+    s = 'data/trip_' + str(trip_id) + '.json'
+    try:
+        db = open(s,'r')
+    except IOError:
+        return '{}', 404
+    data = json.load(db)
+    return json.dumps(data, ensure_ascii=True)
 
 # POST /trips/point: trip_id, lat, long
 #   response: success or failure code
 # For sending current location to db
+@app.route('/REST/1.0/trips/point', methods=['POST'])
+def add_trip_point():
+    # placeholder
+    return '{}'
 
+# ================
+# Main app function definitions
+# ================
 
 @app.route('/')
 
