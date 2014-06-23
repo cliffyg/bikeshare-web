@@ -50,6 +50,16 @@ def riders_info(rider_id):
     stations = json.load(db)
     return json.dumps(stations, ensure_ascii=True)
 
+@app.route('/REST/1.0/riders/favorites/info/<int:rider_id>')
+def favorite_info(rider_id):
+    s = 'data/favorite_' + str(rider_id) + '.json'
+    try:
+        db = open(s,'r')
+    except IOError:
+        return '{}', 404
+    stations = json.load(db)
+    return json.dumps(stations, ensure_ascii=True)
+
 # Bikes
 
 # Trips
