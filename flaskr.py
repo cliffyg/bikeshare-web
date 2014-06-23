@@ -9,7 +9,7 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
 # Set debug mode.
-debug = False
+debug = True
 
 # ================
 # REST API function definitions
