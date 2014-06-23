@@ -25,6 +25,14 @@ def all_stations_in_rad(lat, lon, rad):
     return all_stations()
 
 @app.route('/REST/1.0/stations/info/<int:station_id>')
+def stations_info(station_id):
+    s = 'data/station_' + str(station_id) + '.json'
+    try:
+        db = open(s,'r')
+    except IOError:
+        return '{}', 404
+    stations = json.load(db)
+    return json.dumps(stations, ensure_ascii=True)
 
 # Riders
 
