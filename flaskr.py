@@ -104,6 +104,15 @@ def rider_history(rider_id):
 # ========
 # GET /bikes/active: lat, long, radius
 #   response: array of bike_id, lat, long tuples
+@app.route('/REST/1.0/bikes/active/<float:lat>/<float:lon>/<float:rad>')
+def active_bikes_in_rad(lat, lon, rad):
+    return active_bikes()
+# This is just temporary so we have something to show.
+@app.route('/REST/1.0/bikes/active')
+def active_bikes():
+    db = open('data/bikes.json','r')
+    data = json.load(db)
+    return json.dumps(data, ensure_ascii=True)
 
 # GET /bikes/info: bike_id
 #   response: lat, long, distance biked, total time, array of reports
