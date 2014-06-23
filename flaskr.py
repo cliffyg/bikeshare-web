@@ -11,19 +11,26 @@ bootstrap = Bootstrap(app)
 # Set debug mode.
 debug = False
 
+# ========
 # REST API function definitions
+# ========
 
 # Stations
+# =========
+# GET /stations/all: lat, long, radius
+#   response: array of station_id, lat, lon, zone_id, location tuples
 @app.route('/REST/1.0/stations/all/')
 def all_stations():
     db = open('data/stations.json','r')
-    stations = json.load(db)
-    return json.dumps(stations, ensure_ascii=True)
+    data = json.load(db)
+    return json.dumps(data, ensure_ascii=True)
 
+# GET /stations/info: station_id
+#   response: # bikes available, # of docks, location, fixed price, zone_id
 @app.route('/REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>')
 def all_stations_in_rad(lat, lon, rad):
     return all_stations()
-
+# This is just temporary so we have something to show.
 @app.route('/REST/1.0/stations/info/<int:station_id>')
 def stations_info(station_id):
     s = 'data/station_' + str(station_id) + '.json'
@@ -31,15 +38,20 @@ def stations_info(station_id):
         db = open(s,'r')
     except IOError:
         return '{}', 404
-    stations = json.load(db)
-    return json.dumps(stations, ensure_ascii=True)
+    data = json.load(db)
+    return json.dumps(data, ensure_ascii=True)
 
+# POST /stations/reserve: station_id, rider_id
+#   response: time, dock_id, bike_id
 @app.route('/REST/1.0/stations/reserve', methods=['POST'])
 def reserve_station():
     # placeholder
     return '{}'
 
 # Riders
+# ========
+# GET /riders/info: rider_id
+#   response: f_name, l_name
 @app.route('/REST/1.0/riders/info/<int:rider_id>')
 def riders_info(rider_id):
     s = 'data/rider_' + str(rider_id) + '.json'
@@ -47,9 +59,11 @@ def riders_info(rider_id):
         db = open(s,'r')
     except IOError:
         return '{}', 404
-    stations = json.load(db)
-    return json.dumps(stations, ensure_ascii=True)
+    data = json.load(db)
+    return json.dumps(data, ensure_ascii=True)
 
+# GET /riders/favorite/info: riderid
+#   response: array of stationid, address
 @app.route('/REST/1.0/riders/favorites/info/<int:rider_id>')
 def favorite_info(rider_id):
     s = 'data/favorite_' + str(rider_id) + '.json'
@@ -57,8 +71,8 @@ def favorite_info(rider_id):
         db = open(s,'r')
     except IOError:
         return '{}', 404
-    stations = json.load(db)
-    return json.dumps(stations, ensure_ascii=True)
+    data = json.load(db)
+    return json.dumps(data, ensure_ascii=True)
 
 # POST /riders/favorite/add: stationid
 #   response: success or failure code
