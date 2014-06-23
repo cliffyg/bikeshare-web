@@ -116,16 +116,36 @@ def active_bikes():
 
 # GET /bikes/info: bike_id
 #   response: lat, long, distance biked, total time, array of reports
+@app.route('/REST/1.0/bikes/info/<int:bike_id>')
+def bike_info(bike_id):
+    s = 'data/bike_' + str(bike_id) + '.json'
+    try:
+        db = open(s,'r')
+    except IOError:
+        return '{}', 404
+    data = json.load(db)
+    return json.dumps(data, ensure_ascii=True)
 
 # POST /bikes/checkout: bike_id, rider_id
 #   resposne: trip_id
+@app.route('/REST/1.0/bikes/checkout', methods=['POST'])
+def checkout_bike():
+    # placeholder
+    return '{}'
 
 # POST /bikes/checkin: bike_id, rider_id, station_id, trip_id
 #   response: success or failure code
+@app.route('/REST/1.0/bikes/checkin', methods=['POST'])
+def checkin_bike():
+    # placeholder
+    return '{}'
 
 # POST /bikes/report: bike_id, rider_id, array of true false with description at end?
 #   response: success or failure code
-
+@app.route('/REST/1.0/bikes/report', methods=['POST'])
+def report_bike_damage():
+    # placeholder
+    return '{}'
 
 # Trips
 # ========
