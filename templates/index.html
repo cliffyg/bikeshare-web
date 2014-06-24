@@ -3,7 +3,19 @@
 {% block title %}BikeShare{% endblock %}
 
 {% block page_content %}
-<div class="page-header">
-    <h1>Place map here!</h1>
-</div>
+    <div class="row">
+        <div class="col-xs-3">
+            <h3>Overview:</h3>
+            <table class="table">
+                <tbody>
+                    <tr><td>Total Bikes</td><td>234</td></tr>
+                    <tr><td>Total Stations</td><td>563</td></tr>
+                    <tr><td>Total Bikers</td><td>1345</td></tr>
+                    <tr><td>Bikes in use</td><td>92</td></tr>
+                    <tr><td>Average Bikes/Station</td><td>10</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-xs-9" id="mapdiv">Map goes here</div>
+    </div>
 {% endblock %}
