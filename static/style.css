@@ -1,0 +1,19 @@
+.widget {
+    border: 1px black solid;
+    border-radius: 1em;
+    margin: 5px;
+}
+
+.widget-header {
+    border-radius: 1em 1em 0 0;
+    background-color: grey;
+    border-bottom: 1px black solid;
+    padding: 5px;
+    text-align: center;
+
+}
+
+.widget-body {
+    border-radius: 0 0 1em 1em;
+    padding: 10px;
+}

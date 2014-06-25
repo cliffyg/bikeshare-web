@@ -4,17 +4,50 @@
 
 {% block page_content %}
     <div class="row">
-        <div class="col-xs-3">
-            <h3>Overview:</h3>
-            <table class="table">
-                <tbody>
-                    <tr><td>Total Bikes</td><td>234</td></tr>
-                    <tr><td>Total Stations</td><td>563</td></tr>
-                    <tr><td>Total Bikers</td><td>1345</td></tr>
-                    <tr><td>Bikes in use</td><td>92</td></tr>
-                    <tr><td>Average Bikes/Station</td><td>10</td></tr>
-                </tbody>
-            </table>
+        <div class="col-xs-3" id="left">
+            <div class="widget">
+                <div class="widget-header">
+                    <strong>Overview</strong> 
+                </div>
+                <table class="table">
+                    <tbody>
+                        <tr><td>Total Bikes</td><td>234</td></tr>
+                        <tr><td>Total Stations</td><td>563</td></tr>
+                        <tr><td>Total Bikers</td><td>1345</td></tr>
+                        <tr><td>Bikes in use</td><td>92</td></tr>
+                        <tr><td>Average Bikes/Station</td><td>10</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="widget">
+                <div class="widget-header">
+                    <strong>Navigation</strong>
+                </div>
+                <div class="widget-body">
+                    <a class="btn btn-default" href="" role="button">View all Stations</a>
+                    <a class="btn btn-default" href="" role="button">View all Bikes</a>
+                    <a class="btn btn-default" href="" role="button">View all Riders</a>
+                </div>
+            </div>
+            <div class="widget">
+                <div class="widget-header">
+                    <strong>Map Legend</strong>
+                </div>
+                <div class="widget-body">
+                    <div class="row">
+                        <div class="col-xs-1"><span class="glyphicon glyphicon-asterisk"></span></div>
+                        <div class="col-xs-5">Healthy Station</div>
+                        <div class="col-xs-1"><span class="glyphicon glyphicon-asterisk"></span></div>
+                        <div class="col-xs-4">Warning Station</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-1"><span class="glyphicon glyphicon-asterisk"></span></div>
+                        <div class="col-xs-5">Danger Station</div>
+                        <div class="col-xs-1"><span class="glyphicon glyphicon-asterisk"></span></div>
+                        <div class="col-xs-4">Active Bike</div>
+                    </div> 
+                </div>
+            </div>
         </div>
         <div class="col-xs-9" id="mapdiv">Map goes here</div>
     </div>

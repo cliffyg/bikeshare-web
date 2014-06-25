@@ -1,13 +1,8 @@
 {% extends "bootstrap/base.html" %}
 {% block title %}Flasky{% endblock %}
-{% block scripts %}
-<script src="http://www.openlayers.org/api/OpenLayers.js"></script>
-<script src="http://capstoneaa.cs.pdx.edu:8082/javascript/openstreetmap/portlandMap.js"></script>
-<script> window.onload = function() {
-        init();
-};
-</script>
+{% block styles %}
 {{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
 {% endblock %}
 {% block navbar %}
 <div class="navbar navbar-inverse" role="navigation">
