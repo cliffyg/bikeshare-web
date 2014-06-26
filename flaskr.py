@@ -1,5 +1,5 @@
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, send_from_directory
 from flask.ext.bootstrap import Bootstrap
 import json
 import re
@@ -9,7 +9,7 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
 # Set debug mode.
-debug = True
+debug = False
 
 # ================
 # REST API function definitions
@@ -187,6 +187,10 @@ def home():
 def user(name):
     return render_template('user.html',name=name)
 
+@app.route('/javascript/<path:path>', methods=['GET','OPTIONS'])
+def js_proxy(path):
+    return send_from_directory(app.root_path + '/javascript/', path)
+
 @app.errorhandler(404)
 def page_not_found(e):
     if re.match('/REST',request.path):
@@ -203,7 +207,7 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
     if debug:
-        app.run(host='127.0.0.1', port=8080, debug=True)
+        app.run(host='127.0.0.1', port=8081, debug=True)
     else:
-        app.run(host='0.0.0.0', port=8080, debug=False)
+        app.run(host='0.0.0.0', port=8081, debug=False)
 

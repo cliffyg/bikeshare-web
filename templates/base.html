@@ -1,5 +1,4 @@
-{% extends "bootstrap/base.html" %}
-{% block title %}Flasky{% endblock %}
+{% extends "bootstrap/base.html" %} 
 {% block navbar %}
 <div class="navbar navbar-inverse" role="navigation">
     <div class="container">
@@ -23,7 +22,22 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+<script src="http://bikeshare.cs.pdx.edu:8081/javascript/openstreetmap/OpenStreetMap.js"></script>
+<script src="http://bikeshare.cs.pdx.edu:8081/javascript/openstreetmap/portlandMap.js"></script>
+<script> window.onload = function() {
+        init();
+};
+</script>
+{% endblock %}
 {% block content %}
+
+<style>
+    #mapdiv { width:1400px; height:1000px; }
+    div.olControlAttribution { bottom:3px; }
+</style>
 <div class="container">
     {% block page_content %}{% endblock %}
 </div>
