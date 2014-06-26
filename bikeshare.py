@@ -169,6 +169,29 @@ def add_trip_point():
     # placeholder
     return '{}'
 
+# Logins
+# ========
+# Query:    POST /login/check: username
+# Response: rider_id
+@app.route('/REST/1.0/login/check', methods=['POST'])
+def check_login():
+    db = open('data/users.json','r')
+    data = json.load(db)
+    target_user = request.form['user_name']
+    for u in data:
+        if u['user_name'] == target_user:
+            return json.dumps(subdict(u, ['user_id']), ensure_ascii=True)
+    return '{}', 404
+
+# Helper function. Extracts and returns only the set of key/value pairs that
+# we want from a given dict.
+def subdict(d, keys):
+    d2 = dict()
+    for k, v in d.iteritems():
+        if k in keys:
+            d2[k] = v
+    return d2
+
 # ================
 # Main app function definitions
 # ================
