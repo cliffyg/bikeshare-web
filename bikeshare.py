@@ -126,12 +126,17 @@ def bike_info(bike_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# Query:    POST /bikes/checkout: bike_id, rider_id
-# Response: trip_id
+# Query:    POST /bikes/checkout: station_id
+# Response: bike_id
 @app.route('/REST/1.0/bikes/checkout', methods=['POST'])
 def checkout_bike():
-    # placeholder
-    return '{}'
+    db = open('data/checkout.json','r')
+    data = json.load(db)
+    target_station = request.form['station_id']
+    if target_station == str(data['station_id']):
+        bikes = data['bikes']
+        return json.dumps(bikes[0], ensure_ascii=True)
+    return '{}', 403
 
 # Query:    POST /bikes/checkin: bike_id, rider_id, station_id, trip_id
 # Response: success or failure code
