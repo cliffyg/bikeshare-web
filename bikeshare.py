@@ -138,12 +138,20 @@ def checkout_bike():
         return json.dumps(bikes[0], ensure_ascii=True)
     return '{}', 403
 
-# Query:    POST /bikes/checkin: bike_id, rider_id, station_id, trip_id
-# Response: success or failure code
+# Query:    POST /bikes/checkin: bike_id, station_id
+# Response: price, discount
 @app.route('/REST/1.0/bikes/checkin', methods=['POST'])
 def checkin_bike():
-    # placeholder
-    return '{}'
+    db = open('data/checkin.json','r')
+    data = json.load(db)
+    target_station = request.form['station_id']
+    target_bike = request.form['bike_id']
+    if target_station == str(data['station_id']):
+        if data['num_docks'] > 0:
+            price = float(data['price']) - (float(data['price']) * data['discount'])
+            retn = { 'price': price, 'discount': data['discount'] }
+            return json.dumps(retn, ensure_ascii=True)
+    return '{}', 403
 
 # Query:    POST /bikes/report: bike_id, rider_id, array of bike status info
 # Response: success or failure code
