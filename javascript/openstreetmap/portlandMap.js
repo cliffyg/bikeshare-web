@@ -1,7 +1,9 @@
 var pointFeature;
 var vectorLayer;
-var features = [];
+var featuresToStationIds = []
+var features = []
 function init() {
+  //var features = [];
   map = new OpenLayers.Map("mapdiv");
   var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "http://tile.openstreetmap.org/${z}/${x}/${y}.png", {numZoomLevels: 19});
   //var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "http://bikeshare.cs.pdx.edu/osm/${z}/${x}/${y}.png", {numZoomLevels: 19, crossOriginKeyword: null});
@@ -37,101 +39,60 @@ function init() {
           renderers: renderer
       });
   var zoom = 14;
-      var point = new OpenLayers.Geometry.Point(-122.680591,45.510016);
-      point.transform(
-      	   //this has to be done, not sure of the reason
-            	new OpenLayers.Projection("EPSG:4326"), 
-            	new OpenLayers.Projection("EPSG:900913") 
-      
-      );
-      var pointFeature = new OpenLayers.Feature.Vector(point);
-      pointFeature.attributes = {
-      name: "BikeShare - PSU Computer Science",
-      favColor: 'red',
-      align: "cm",
-      	xOffset: 10,
-      	yOffset: 10,
-      	pointColor: 'blue'
-          };
-      features.push(pointFeature);
-      var providenceParkPoint = new OpenLayers.Geometry.Point(-122.691692,45.521718);
-      providenceParkPoint.transform(
-      		new OpenLayers.Projection("EPSG:4326"), 
-  		new OpenLayers.Projection("EPSG:900913") 
-  		);
-      providenceParkPointFeature = new OpenLayers.Feature.Vector(providenceParkPoint);
-      providenceParkPointFeature.attributes = {
-  	name : "BikeShare - Providence Park",
-  	favColor : 'red',
-  	align : 'cm',
-  	xOffset : 10,
-  	yOffset : 10,
-  	pointColor : 'blue'
-      };
-      features.push(providenceParkPointFeature);
-      esplanadePoint = new OpenLayers.Geometry.Point(-122.667549,45.516573);
-      esplanadePoint.transform(
-  	new OpenLayers.Projection("EPSG:4326"), 
-  	new OpenLayers.Projection("EPSG:900913")
-      );
-      esplanadePointFeature = new OpenLayers.Feature.Vector(esplanadePoint);
-      esplanadePointFeature.attributes = {
-  	name : "BikeShare - East Bank Esplanade",
-          favColor : 'red',
-          align : 'cm',
-          xOffset : 10,
-          yOffset : 10,
-          pointColor : 'blue'
-      };
-      features.push(esplanadePointFeature);
-      waterfrontPoint = new OpenLayers.Geometry.Point(-122.673013,45.509234);
-      waterfrontPoint.transform(
-  	new OpenLayers.Projection("EPSG:4326"),
-  	new OpenLayers.Projection("EPSG:900913")
-      );
-      waterfrontPointFeature = new OpenLayers.Feature.Vector(waterfrontPoint);
-      waterfrontPointFeature.attributes = {
-  	name : "BikeShare - Waterfront",
-          favColor : 'red',
-          align : 'cm',
-          xOffset : 10,
-          yOffset : 10,
-          pointColor : 'blue'
-      };
-      features.push(waterfrontPointFeature);
-      modaCenterPoint = new OpenLayers.Geometry.Point(-122.666639,45.530688);
-      modaCenterPoint.transform(
-  	new OpenLayers.Projection("EPSG:4326"),
-  	new OpenLayers.Projection("EPSG:900913")
-      );
-      modaCenterPointFeature = new OpenLayers.Feature.Vector(modaCenterPoint);
-      modaCenterPointFeature.attributes = {
-          name : "BikeShare - Moda Center",
-          favColor : 'red',
-          align : 'cm',
-          xOffset : 10,
-          yOffset : 10,
-          pointColor : 'blue'
-      };
-      features.push(modaCenterPointFeature);
-      tramPoint = new OpenLayers.Geometry.Point(-122.671613,45.499209);
-      tramPoint.transform(
-  	new OpenLayers.Projection("EPSG:4326"),
-  	new OpenLayers.Projection("EPSG:900913")
-      );
-      tramPointFeature = new OpenLayers.Feature.Vector(tramPoint);
-      tramPointFeature.attributes = {
-          name : "BikeShare - Tram",
-          favColor : 'red',
-          align : 'cm',
-          xOffset : 10,
-          yOffset : 10,
-          pointColor : 'blue'
-      };
-      features.push(tramPointFeature); 
-      map.addLayer(vectorLayer);
-      vectorLayer.addFeatures(features);
-      map.setCenter(lonlat, zoom);
+      $.ajax({url : "http://bikeshare.cs.pdx.edu:8081/REST/1.0/stations/all",
+        success : function(result) {
+            bikeStationList = JSON.parse(result); 
+            for (var i = 0; i < bikeStationList.length; i ++) {
+              var latitude = parseFloat(bikeStationList[i].lat);
+              var longitude = parseFloat(bikeStationList[i].lon);
+              var point = new OpenLayers.Geometry.Point(longitude, latitude);
+              point.transform(
+                new OpenLayers.Projection("EPSG:4326"),
+                new OpenLayers.Projection("EPSG:900913")
+              );
+              var pointFeature = new OpenLayers.Feature.Vector(point);
+              pointFeature.attributes = {
+                  name : "BikeShare Station " + bikeStationList[i].station_id,
+                  favColor : 'red',
+                  align : 'cm',
+                  xOffset : 10,
+                  yOffset : 10,
+                  pointColor : 'blue'
+              };
+              features.push(pointFeature);
+              featuresToStationIds[i] = bikeStationList[i].station_id;
+              map.addLayer(vectorLayer);
+              vectorLayer.addFeatures(features);
+              map.setCenter(lonlat, zoom); 
+            }
+            return;
+        }
+      });
+}
+
+function getBikestationData() {
+    for (var i = 0; i < featuresToStationIds.length; i ++) {
+       $.ajax({ url : "http://bikeshare.cs.pdx.edu:8081/REST/1.0/stations/info/" + featuresToStationIds[i],
+            success : function(result) {
+                stationData = JSON.parse(result);
+                setStationColor(this.stationFeatureId,stationData);  
+                return;          
+            },
+            stationFeatureId : i
+       });
+    }
+    vectorLayer.redraw();
+}
+
+function setStationColor(stationNum,stationData) {
+    bikePercent = (stationData.num_bikes / stationData.num_docks) * 100;
+    if (bikePercent >= 70) {
+        features[stationNum].attributes.pointColor = 'blue';
+    } else if (70 > bikePercent >= 40) {
+        features[stationNum].attributes.pointColor = 'yellow';
+    } else {
+        features[stationNum].attributes.pointColor = 'red';
+    }
 }
 function getRandomInt (min, max) {
   	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -146,4 +107,4 @@ function setRandomPointStuff() {
   }
  vectorLayer.redraw();
 }
- setInterval(function(){setRandomPointStuff()},15000);
+ setInterval(function(){getBikestationData()},15000);
