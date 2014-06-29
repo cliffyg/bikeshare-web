@@ -1,4 +1,4 @@
-
+import syslog
 from flask import Flask, request, render_template, send_from_directory
 from flask.ext.bootstrap import Bootstrap
 import json
@@ -7,48 +7,6 @@ import re
 from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
-
-# see http://flask.pocoo.org/snippets/56/
-#def crossdomain(origin=None, methods=None, headers=None,
-#                max_age=21600, attach_to_all=True,
-#                automatic_options=True):
-#    if methods is not None:
-#        methods = ', '.join(sorted(x.upper() for x in methods))
-#    if headers is not None and not isinstance(headers, basestring):
-#        headers = ', '.join(x.upper() for x in headers)
-#    if not isinstance(origin, basestring):
-#        origin = ', '.join(origin)
-#    if isinstance(max_age, timedelta):
-#        max_age = max_age.total_seconds()
-#
-#    def get_methods():
-#        if methods is not None:
-#            return methods
-#
-#        options_resp = current_app.make_default_options_response()
-#        return options_resp.headers['allow']
-#
-#    def decorator(f):
-#        def wrapped_function(*args, **kwargs):
-#            if automatic_options and request.method == 'OPTIONS':
-#                resp = current_app.make_default_options_response()
-#            else:
-#                resp = make_response(f(*args, **kwargs))
-#            if not attach_to_all and request.method != 'OPTIONS':
-#                return resp
-#
-#            h = resp.headers
-#
-#            h['Access-Control-Allow-Origin'] = origin
-#            h['Access-Control-Allow-Methods'] = get_methods()
-#            h['Access-Control-Max-Age'] = str(max_age)
-#            if headers is not None:
-#                h['Access-Control-Allow-Headers'] = headers
-#            return resp
-#
-#        f.provide_automatic_options = False
-#        return update_wrapper(wrapped_function, f)
-#    return decorator
 
 app = Flask(__name__)
 
@@ -71,9 +29,12 @@ def all_stations_in_rad(lat, lon, rad):
     return all_stations()
 # This is just temporary so we have something to show.
 @app.route('/REST/1.0/stations/all')
-#@crossdomain(origin='*')
 def all_stations():
-    db = open('data/stations.json','r')
+    try:
+        db = open('/home/dramage/bikeshare-web/data/stations.json','r')
+    except:
+        syslog.syslog(syslog.LOG_ERR, "could not open stations.json")
+
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
@@ -81,7 +42,7 @@ def all_stations():
 # Response: # bikes available, # of docks, location, fixed price, zone_id
 @app.route('/REST/1.0/stations/info/<int:station_id>')
 def stations_info(station_id):
-    s = 'data/station_' + str(station_id) + '.json'
+    s = '/home/dramage/bikeshare-web/data/station_' + str(station_id) + '.json'
     print s
     try:
         db = open(s,'r')

@@ -5,8 +5,8 @@ var features = []
 function init() {
   //var features = [];
   map = new OpenLayers.Map("mapdiv");
-  var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "http://tile.openstreetmap.org/${z}/${x}/${y}.png", {numZoomLevels: 19});
-  //var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "http://bikeshare.cs.pdx.edu/osm/${z}/${x}/${y}.png", {numZoomLevels: 19, crossOriginKeyword: null});
+  //var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "http://tile.openstreetmap.org/${z}/${x}/${y}.png", {numZoomLevels: 19});
+  var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "http://bikeshare.cs.pdx.edu/osm/${z}/${x}/${y}.png", {numZoomLevels: 19, crossOriginKeyword: null});
   map.addLayer(newLayer); 
   // allow testing of specific renderers via "?renderer=Canvas", etc
   var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
@@ -39,7 +39,7 @@ function init() {
           renderers: renderer
       });
   var zoom = 14;
-      $.ajax({url : "http://bikeshare.cs.pdx.edu:8081/REST/1.0/stations/all",
+      $.ajax({url : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/REST/1.0/stations/all",
         success : function(result) {
             bikeStationList = JSON.parse(result); 
             for (var i = 0; i < bikeStationList.length; i ++) {
@@ -68,11 +68,12 @@ function init() {
             return;
         }
       });
+     map.setCenter(lonlat, zoom);
 }
 
 function getBikestationData() {
     for (var i = 0; i < featuresToStationIds.length; i ++) {
-       $.ajax({ url : "http://bikeshare.cs.pdx.edu:8081/REST/1.0/stations/info/" + featuresToStationIds[i],
+       $.ajax({ url : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/REST/1.0/stations/info/" + featuresToStationIds[i],
             success : function(result) {
                 stationData = JSON.parse(result);
                 setStationColor(this.stationFeatureId,stationData);  
@@ -107,4 +108,4 @@ function setRandomPointStuff() {
   }
  vectorLayer.redraw();
 }
- setInterval(function(){getBikestationData()},15000);
+setInterval(function(){getBikestationData()},15000);
