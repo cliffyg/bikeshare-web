@@ -1,9 +1,56 @@
 {%extends "base.html" %}
 
-{% block title %}BikeShare{% endblock %}
+{% block title %}BikeSharePDX{% endblock %}
 
 {% block page_content %}
-<div class="page-header">
-    <h1>Place map here!</h1>
-</div>
+    <div class="row">
+        <div class="col-sm-3" id="left">
+            <div class="widget">
+                <div class="widget-header">
+                    <strong>Overview</strong> 
+                </div>
+                <table class="table">
+                    <tbody>
+                        <tr><td>Total Bikes</td><td>734</td></tr>
+                        <tr><td>Total Stations</td><td>63</td></tr>
+                        <tr><td>Total Bikers</td><td>1345</td></tr>
+                        <tr><td>Bikes in use</td><td>92</td></tr>
+                        <tr><td>Average Bikes/Station</td><td>10</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="widget">
+                <div class="widget-header">
+                    <strong>Quick Navigation</strong>
+                </div>
+                <div class="widget-body">
+                    <a href="#"><p class="text-center">View all Stations</p></a>
+                    <hr>
+                    <a href="#"><p class="text-center">View all Bikes</p></a>
+                    <hr>
+                    <a href="#"><p class="text-center">View all Riders</p></a>
+                </div>
+            </div>
+            <div class="widget">
+                <div class="widget-header">
+                    <strong>Map Legend</strong>
+                </div>
+                <div class="widget-body">
+                    <div class="row">
+                        <div class="col-md-1"><span class="glyphicon glyphicon-asterisk"></span></div>
+                        <div class="col-md-5">Healthy Station</div>
+                        <div class="col-md-1"><span class="glyphicon glyphicon-asterisk"></span></div>
+                        <div class="col-md-4">Warning Station</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"><span class="glyphicon glyphicon-asterisk"></span></div>
+                        <div class="col-md-5">Danger Station</div>
+                        <div class="col-md-1"><span class="glyphicon glyphicon-asterisk"></span></div>
+                        <div class="col-md-4">Active Bike</div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9" id="mapdiv">Map goes here</div>
+    </div>
 {% endblock %}
