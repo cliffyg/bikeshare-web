@@ -72,69 +72,6 @@ def stations_info(station_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# Query:    POST /stations/reserve: station_id, rider_id
-# Response: time, dock_id, bike_id
-@app.route('/REST/1.0/stations/reserve', methods=['POST'])
-def reserve_station():
-    # placeholder
-    return '{}'
-
-# Riders
-# ========
-
-# Get rider info
-# ---------
-# Verb:     GET
-# Route:    /REST/1.0/riders/info/<int:rider_id>
-# Response: {<string:f_name>,<string:l_name>}
-@app.route('/REST/1.0/riders/info/<int:rider_id>')
-def riders_info(rider_id):
-    s = 'data/rider_' + str(rider_id) + '.json'
-    try:
-        db = open(s,'r')
-    except IOError:
-        return '{}', 404
-    data = json.load(db)
-    return json.dumps(data, ensure_ascii=True)
-
-# Query:    GET /riders/favorites/info: riderid
-# Response: array of stationid, address
-@app.route('/REST/1.0/riders/favorites/info/<int:rider_id>')
-def favorite_info(rider_id):
-    s = 'data/favorite_' + str(rider_id) + '.json'
-    try:
-        db = open(s,'r')
-    except IOError:
-        return '{}', 404
-    data = json.load(db)
-    return json.dumps(data, ensure_ascii=True)
-
-# Query:    POST /riders/favorites/add: stationid
-# Response: success or failure code
-@app.route('/REST/1.0/riders/favorites/add', methods=['POST'])
-def add_favorite():
-    # placeholder
-    return '{}'
-
-# Query:    POST /riders/favorites/remove: stationid
-# Response: success or failure code
-@app.route('/REST/1.0/riders/favorites/remove', methods=['POST'])
-def remove_favorite():
-    # placeholder
-    return '{}'
-
-# Query:    GET /riders/history: riderid
-# Response: array of tripid, time
-@app.route('/REST/1.0/riders/history/<int:rider_id>')
-def rider_history(rider_id):
-    s = 'data/history_' + str(rider_id) + '.json'
-    try:
-        db = open(s,'r')
-    except IOError:
-        return '{}', 404
-    data = json.load(db)
-    return json.dumps(data, ensure_ascii=True)
-
 # Bikes
 # ========
 
@@ -206,13 +143,6 @@ def checkin_bike():
             return json.dumps(retn, ensure_ascii=True)
     return '{}', 403
 
-# Query:    POST /bikes/report: bike_id, rider_id, array of bike status info
-# Response: success or failure code
-@app.route('/REST/1.0/bikes/report', methods=['POST'])
-def report_bike_damage():
-    # placeholder
-    return '{}'
-
 # Get/send recent bike positional data
 # ---------
 # Helper function which calls either the get or send version of this function,
@@ -246,28 +176,6 @@ def send_bike_position(bike_id):
         db = open(s,'r')
     except IOError:
         return '{}', 404
-    return '{}'
-
-# Trips
-# ========
-# Query:    GET /trips/info: trip_id
-# Response: start station_id, end station_id, date, array of lat, lon
-@app.route('/REST/1.0/trips/info/<int:trip_id>')
-def trip_info(trip_id):
-    s = 'data/trip_' + str(trip_id) + '.json'
-    try:
-        db = open(s,'r')
-    except IOError:
-        return '{}', 404
-    data = json.load(db)
-    return json.dumps(data, ensure_ascii=True)
-
-# Query:    POST /trips/point: trip_id, lat, lon
-# Response: success or failure code
-# For sending current location to db
-@app.route('/REST/1.0/trips/point', methods=['POST'])
-def add_trip_point():
-    # placeholder
     return '{}'
 
 # Helper function. Extracts and returns only the set of key/value pairs that
