@@ -15,22 +15,53 @@ debug = False
 # REST API function definitions
 # ================
 
+# Logins
+# ========
+
+# User login
+# ---------
+# Verb:      POST
+# Route:     /REST/1.0/login/check
+# Form data: <string:user_name>
+# Response:  {<int:user_id>}
+@app.route('/REST/1.0/login/check', methods=['POST'])
+def check_login():
+    db = open('data/users.json','r')
+    data = json.load(db)
+    target_user = request.form['user_name']
+    for u in data:
+        if u['user_name'] == target_user:
+            return json.dumps(subdict(u, ['user_id']), ensure_ascii=True)
+    return '{}', 404
+
 # Stations
 # =========
-# Query:    GET /stations/all: lat, lon, radius
-# Response: array of station_id, lat, lon, zone_id, location tuples
-@app.route('/REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>')
-def all_stations_in_rad(lat, lon, rad):
-    return all_stations()
-# This is just temporary so we have something to show.
+
+# Get nearby stations
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/stations/all
+# Response: [ {<int:station_id>,<int:lat>,<int:lon>,<int:zone_id>,
+#              <string:location>}, ... ]
 @app.route('/REST/1.0/stations/all')
 def all_stations():
     db = open('data/stations.json','r')
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
+# Verb:     GET
+# Route:    /REST/1.0/stations/all/<int:lat>/<int:lon>/<int:rad>
+# Response: [ {<int:station_id>,<int:lat>,<int:lon>,<int:zone_id>,
+#              <string:location>}, ... ]
+@app.route('/REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>')
+def all_stations_in_rad(lat, lon, rad):
+    return all_stations()
 
-# Query:    GET /stations/info: station_id
-# Response: # bikes available, # of docks, location, fixed price, zone_id
+# Get individual station info
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/stations/info/<int:station_id>
+# Response: {<int:num_bikes>,<int:num_docks>,<string:location>,<float:price>,
+#            <int:zone_id>}
 @app.route('/REST/1.0/stations/info/<int:station_id>')
 def stations_info(station_id):
     s = 'data/station_' + str(station_id) + '.json'
@@ -50,8 +81,12 @@ def reserve_station():
 
 # Riders
 # ========
-# Query:    GET /riders/info: rider_id
-# Response: f_name, l_name
+
+# Get rider info
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/riders/info/<int:rider_id>
+# Response: {<string:f_name>,<string:l_name>}
 @app.route('/REST/1.0/riders/info/<int:rider_id>')
 def riders_info(rider_id):
     s = 'data/rider_' + str(rider_id) + '.json'
@@ -102,20 +137,30 @@ def rider_history(rider_id):
 
 # Bikes
 # ========
-# Query:    GET /bikes/active: lat, lon, radius
-# Response: array of bike_id, lat, lon tuples
-@app.route('/REST/1.0/bikes/active/<float:lat>/<float:lon>/<float:rad>')
-def active_bikes_in_rad(lat, lon, rad):
-    return active_bikes()
-# This is just temporary so we have something to show.
+
+# Get current bike positions
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/bikes/active
+# Response: [ {<int:bike_id>,<float:lat>,<float:lon>}, ... ]
 @app.route('/REST/1.0/bikes/active')
 def active_bikes():
     db = open('data/bikes.json','r')
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
+# Verb:     GET
+# Route:    /REST/1.0/bikes/active/<float:lat>/<float:lon><float:rad>
+# Response: [ {<int:bike_id>,<float:lat>,<float:lon>}, ... ]
+@app.route('/REST/1.0/bikes/active/<float:lat>/<float:lon>/<float:rad>')
+def active_bikes_in_rad(lat, lon, rad):
+    return active_bikes()
 
-# Query:    GET /bikes/info: bike_id
-# Response: lat, lon, distance biked, total time, array of reports
+# Get individual bike info
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/bikes/info/<int:bike_id>
+# Response: {<float:lat>,<float:lon>,<float:distance>,<int:time>,
+#            <[ string, ... ]:reports>}
 @app.route('/REST/1.0/bikes/info/<int:bike_id>')
 def bike_info(bike_id):
     s = 'data/bike_' + str(bike_id) + '.json'
@@ -126,8 +171,12 @@ def bike_info(bike_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# Query:    POST /bikes/checkout: station_id
-# Response: bike_id
+# Checkout bike
+# ---------
+# Verb:      POST
+# Route:     /REST/1.0/bikes/checkout
+# Form data: <int:station_id>
+# Response:  {<int:bike_id>}
 @app.route('/REST/1.0/bikes/checkout', methods=['POST'])
 def checkout_bike():
     db = open('data/checkout.json','r')
@@ -138,8 +187,12 @@ def checkout_bike():
         return json.dumps(bikes[0], ensure_ascii=True)
     return '{}', 403
 
-# Query:    POST /bikes/checkin: bike_id, station_id
-# Response: price, discount
+# Checkin bike
+# ---------
+# Verb:      POST
+# Route:     /REST/1.0/bikes/checkin
+# Form data: <int:bike_id>,<int:station_id>
+# Response:  {<float:price>,<float:discount>}
 @app.route('/REST/1.0/bikes/checkin', methods=['POST'])
 def checkin_bike():
     db = open('data/checkin.json','r')
@@ -160,6 +213,8 @@ def report_bike_damage():
     # placeholder
     return '{}'
 
+# Get/send recent bike positional data
+# ---------
 # Helper function which calls either the get or send version of this function,
 # depending on which HTTP verb is used.
 @app.route('/REST/1.0/bikes/pos/<int:bike_id>', methods=['GET','POST'])
@@ -168,8 +223,9 @@ def bike_pos(bike_id):
         return get_bike_position(bike_id)
     else:
         return send_bike_position(bike_id)
-# Query:    GET /bikes/pos: bike_id
-# Response: lat, lon(, time?)
+# Verb:     GET
+# Route:    /REST/1.0/bikes/pos/<int:bike_id>
+# Response: [ {<float:lat>,<float:lon>,<int:time>}, ... ]
 def get_bike_position(bike_id):
     s = 'data/bikepos_' + str(bike_id) + '.json'
     try:
@@ -178,8 +234,10 @@ def get_bike_position(bike_id):
         return '{}', 404
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
-# Query:    POST /bikes/pos: bike_id, lat, lon
-# Response: success or failure code
+# Verb:      POST
+# Route:     /REST/1.0/bikes/pos/<int:bike_id>
+# Form data: <float:lat>,<float:lon>
+# Response:  {}
 def send_bike_position(bike_id):
     lat = request.form['lat']
     lon = request.form['lon']
@@ -211,20 +269,6 @@ def trip_info(trip_id):
 def add_trip_point():
     # placeholder
     return '{}'
-
-# Logins
-# ========
-# Query:    POST /login/check: username
-# Response: rider_id
-@app.route('/REST/1.0/login/check', methods=['POST'])
-def check_login():
-    db = open('data/users.json','r')
-    data = json.load(db)
-    target_user = request.form['user_name']
-    for u in data:
-        if u['user_name'] == target_user:
-            return json.dumps(subdict(u, ['user_id']), ensure_ascii=True)
-    return '{}', 404
 
 # Helper function. Extracts and returns only the set of key/value pairs that
 # we want from a given dict.
