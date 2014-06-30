@@ -9,7 +9,7 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
 # Set debug mode.
-debug = False 
+debug = False
 
 # ================
 # REST API function definitions
@@ -158,6 +158,36 @@ def checkin_bike():
 @app.route('/REST/1.0/bikes/report', methods=['POST'])
 def report_bike_damage():
     # placeholder
+    return '{}'
+
+# Helper function which calls either the get or send version of this function,
+# depending on which HTTP verb is used.
+@app.route('/REST/1.0/bikes/pos/<int:bike_id>', methods=['GET','POST'])
+def bike_pos(bike_id):
+    if request.method == 'GET':
+        return get_bike_position(bike_id)
+    else:
+        return send_bike_position(bike_id)
+# Query:    GET /bikes/pos: bike_id
+# Response: lat, long(, time?)
+def get_bike_position(bike_id):
+    s = 'data/bikepos_' + str(bike_id) + '.json'
+    try:
+        db = open(s,'r')
+    except IOError:
+        return '{}', 404
+    data = json.load(db)
+    return json.dumps(data, ensure_ascii=True)
+# Query:    POST /bikes/pos: bike_id, lat, lon
+# Response: success or failure code
+def send_bike_position(bike_id):
+    lat = request.form['lat']
+    lon = request.form['lon']
+    s = 'data/bikepos_' + str(bike_id) + '.json'
+    try:
+        db = open(s,'r')
+    except IOError:
+        return '{}', 404
     return '{}'
 
 # Trips
