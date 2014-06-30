@@ -1,23 +1,14 @@
 [
 {
     "user_id": 1,
-    "user_name": "bjones",
-    "credit_card": 1234567890123456,
-    "membership_status": "active",
-    "exp_date": "December 12, 2014"
+    "user_name": "bjones"
 },
 {
     "user_id": 2,
-    "user_name": "smurphy",
-    "credit_card": 8901234567890123,
-    "membership_status": "active",
-    "exp_date": "February 20, 2015"
+    "user_name": "smurphy"
 },
 {
     "user_id": 3,
-    "user_name": "asmith",
-    "credit_card": 6789012345678901,
-    "membership_status": "expired",
-    "exp_date": "June 20, 2014"
+    "user_name": "asmith"
 }
 ]
