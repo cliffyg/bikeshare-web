@@ -17,7 +17,7 @@ debug = False
 
 # Stations
 # =========
-# Query:    GET /stations/all: lat, long, radius
+# Query:    GET /stations/all: lat, lon, radius
 # Response: array of station_id, lat, lon, zone_id, location tuples
 @app.route('/REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>')
 def all_stations_in_rad(lat, lon, rad):
@@ -102,8 +102,8 @@ def rider_history(rider_id):
 
 # Bikes
 # ========
-# Query:    GET /bikes/active: lat, long, radius
-# Response: array of bike_id, lat, long tuples
+# Query:    GET /bikes/active: lat, lon, radius
+# Response: array of bike_id, lat, lon tuples
 @app.route('/REST/1.0/bikes/active/<float:lat>/<float:lon>/<float:rad>')
 def active_bikes_in_rad(lat, lon, rad):
     return active_bikes()
@@ -115,7 +115,7 @@ def active_bikes():
     return json.dumps(data, ensure_ascii=True)
 
 # Query:    GET /bikes/info: bike_id
-# Response: lat, long, distance biked, total time, array of reports
+# Response: lat, lon, distance biked, total time, array of reports
 @app.route('/REST/1.0/bikes/info/<int:bike_id>')
 def bike_info(bike_id):
     s = 'data/bike_' + str(bike_id) + '.json'
@@ -169,7 +169,7 @@ def bike_pos(bike_id):
     else:
         return send_bike_position(bike_id)
 # Query:    GET /bikes/pos: bike_id
-# Response: lat, long(, time?)
+# Response: lat, lon(, time?)
 def get_bike_position(bike_id):
     s = 'data/bikepos_' + str(bike_id) + '.json'
     try:
@@ -193,7 +193,7 @@ def send_bike_position(bike_id):
 # Trips
 # ========
 # Query:    GET /trips/info: trip_id
-# Response: start station_id, end station_id, date, array of lat, long
+# Response: start station_id, end station_id, date, array of lat, lon
 @app.route('/REST/1.0/trips/info/<int:trip_id>')
 def trip_info(trip_id):
     s = 'data/trip_' + str(trip_id) + '.json'
@@ -204,7 +204,7 @@ def trip_info(trip_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 
-# Query:    POST /trips/point: trip_id, lat, long
+# Query:    POST /trips/point: trip_id, lat, lon
 # Response: success or failure code
 # For sending current location to db
 @app.route('/REST/1.0/trips/point', methods=['POST'])
