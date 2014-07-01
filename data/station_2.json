@@ -1,6 +1,6 @@
 {
     "num_bikes": 80,
     "num_docks": 80,
-    "location": null,
+    "address": null,
     "price": 5.00
 }

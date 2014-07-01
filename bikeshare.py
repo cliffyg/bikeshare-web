@@ -41,7 +41,7 @@ def check_login():
 # ---------
 # Verb:     GET
 # Route:    /REST/1.0/stations/all
-# Response: [ {<int:station_id>,<int:lat>,<int:lon>,<string:location>}, ... ]
+# Response: [ {<int:station_id>,<int:lat>,<int:lon>,<string:address>}, ... ]
 @app.route('/REST/1.0/stations/all')
 def all_stations():
     db = open('data/stations.json','r')
@@ -49,7 +49,7 @@ def all_stations():
     return json.dumps(data, ensure_ascii=True)
 # Verb:     GET
 # Route:    /REST/1.0/stations/all/<int:lat>/<int:lon>/<int:rad>
-# Response: [ {<int:station_id>,<int:lat>,<int:lon>,<string:location>}, ... ]
+# Response: [ {<int:station_id>,<int:lat>,<int:lon>,<string:address>}, ... ]
 @app.route('/REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>')
 def all_stations_in_rad(lat, lon, rad):
     return all_stations()
@@ -58,7 +58,7 @@ def all_stations_in_rad(lat, lon, rad):
 # ---------
 # Verb:     GET
 # Route:    /REST/1.0/stations/info/<int:station_id>
-# Response: {<int:num_bikes>,<int:num_docks>,<string:location>,<float:price>}
+# Response: {<int:num_bikes>,<int:num_docks>,<string:address>,<float:price>}
 @app.route('/REST/1.0/stations/info/<int:station_id>')
 def stations_info(station_id):
     s = 'data/station_' + str(station_id) + '.json'
