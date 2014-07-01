@@ -41,15 +41,15 @@ def check_login():
 # ---------
 # Verb:     GET
 # Route:    /REST/1.0/stations/all
-# Response: [ {<int:station_id>,<int:lat>,<int:lon>,<string:address>}, ... ]
+# Response: [ {<int:station_id>,<float:lat>,<float:lon>,<string:address>}, ... ]
 @app.route('/REST/1.0/stations/all')
 def all_stations():
     db = open('data/stations.json','r')
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 # Verb:     GET
-# Route:    /REST/1.0/stations/all/<int:lat>/<int:lon>/<int:rad>
-# Response: [ {<int:station_id>,<int:lat>,<int:lon>,<string:address>}, ... ]
+# Route:    /REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>
+# Response: [ {<int:station_id>,<float:lat>,<float:lon>,<string:address>}, ... ]
 @app.route('/REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>')
 def all_stations_in_rad(lat, lon, rad):
     return all_stations()
