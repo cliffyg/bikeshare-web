@@ -1,8 +1,12 @@
-
-from flask import Flask, request, render_template
+import syslog
+from flask import Flask, request, render_template, send_from_directory
 from flask.ext.bootstrap import Bootstrap
 import json
 import re
+
+from datetime import timedelta
+from flask import make_response, request, current_app
+from functools import update_wrapper
 
 app = Flask(__name__)
 
@@ -44,7 +48,11 @@ def check_login():
 # Response: [ {<int:station_id>,<float:lat>,<float:lon>,<string:address>}, ... ]
 @app.route('/REST/1.0/stations/all')
 def all_stations():
-    db = open('data/stations.json','r')
+    try:
+        db = open('/home/dramage/bikeshare-web/data/stations.json','r')
+    except:
+        syslog.syslog(syslog.LOG_ERR, "could not open stations.json")
+
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 # Verb:     GET
@@ -61,7 +69,8 @@ def all_stations_in_rad(lat, lon, rad):
 # Response: {<int:num_bikes>,<int:num_docks>,<string:address>,<float:price>}
 @app.route('/REST/1.0/stations/info/<int:station_id>')
 def stations_info(station_id):
-    s = 'data/station_' + str(station_id) + '.json'
+    s = '/home/dramage/bikeshare-web/data/station_' + str(station_id) + '.json'
+    print s
     try:
         db = open(s,'r')
     except IOError:
@@ -202,6 +211,10 @@ def home():
 def user(name):
     return render_template('user.html',name=name)
 
+@app.route('/javascript/<path:path>', methods=['GET','OPTIONS'])
+def js_proxy(path):
+    return send_from_directory(app.root_path + '/javascript/', path)
+
 @app.errorhandler(404)
 def page_not_found(e):
     if re.match('/REST',request.path):
@@ -218,7 +231,7 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
     if debug:
-        app.run(host='127.0.0.1', port=8082, debug=True)
+        app.run(host='127.0.0.1', port=8081, debug=True)
     else:
-        app.run(host='0.0.0.0', port=8082, debug=False)
+        app.run(host='0.0.0.0', port=8081, debug=True)
 
