@@ -83,7 +83,7 @@ def active_bikes():
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 # Verb:     GET
-# Route:    /REST/1.0/bikes/active/<float:lat>/<float:lon><float:rad>
+# Route:    /REST/1.0/bikes/active/<float:lat>/<float:lon>/<float:rad>
 # Response: [ {<int:bike_id>,<float:lat>,<float:lon>}, ... ]
 @app.route('/REST/1.0/bikes/active/<float:lat>/<float:lon>/<float:rad>')
 def active_bikes_in_rad(lat, lon, rad):
