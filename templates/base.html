@@ -56,8 +56,16 @@ type="image/x-icon">
 {% block content %}
 
 <style>
-    #mapdiv { width:1400px; height:1000px; }
+    #mapdiv { width:950px; height:550px; }
     div.olControlAttribution { bottom:3px; }
+
+    .popup {
+        position: absolute;
+        padding: 5px;
+        font-size: 8pt;
+        z-index: 1000;
+        background-color: white
+    }
 </style>
 <div class="container-fluid">
     {% block page_content %}{% endblock %}

@@ -53,13 +53,19 @@ function init() {
               var pointFeature = new OpenLayers.Feature.Vector(point);
               pointFeature.attributes = {
                   name : "BikeShare Station " + bikeStationList[i].station_id,
-                  favColor : 'red',
+                  favColor : 'black',
                   align : 'cm',
                   xOffset : 10,
                   yOffset : 10,
-                  pointColor : 'blue'
+                  pointColor : 'blue',
+                  popup : new OpenLayers.Popup("popup" + bikeStationList[i].station_id,
+                                                new OpenLayers.LonLat(longitude,latitude),
+                                                new OpenLayers.Size(200,200),
+                                                "This Is A Popup!",
+                                                true)
               };
               features.push(pointFeature);
+              map.addPopup(pointFeature.attributes.popup);
               featuresToStationIds[i] = bikeStationList[i].station_id;
               map.addLayer(vectorLayer);
               vectorLayer.addFeatures(features);
@@ -68,7 +74,24 @@ function init() {
             return;
         }
       });
-     map.setCenter(lonlat, zoom);
+    
+    var report = function(e) {
+        console.log("you have moused over this");
+    };
+     var highlightCtrl = new OpenLayers.Control.SelectFeature(vectorLayer, {
+                hover: true,
+                //highlightOnly: false,
+                //renderIntent: "temporary",
+                eventListeners: {
+                    //beforefeaturehighlighted: featureOver,
+                    featurehighlighted: featureHighlighted,
+                    featureunhighlighted: featureUnhighlighted 
+        }
+     });
+
+    map.addControl(highlightCtrl);
+    highlightCtrl.activate();
+    map.setCenter(lonlat, zoom);
 }
 
 function getBikestationData() {
@@ -108,4 +131,17 @@ function setRandomPointStuff() {
   }
  vectorLayer.redraw();
 }
+
+function featureHighlighted(feature) {
+    console.log("Feature hilighted");
+    console.log(feature.feature.attributes);
+    feature.feature.attributes.popup.show();
+}
+
+function featureUnhighlighted(feature) {
+    console.log("Feature unhilighted");
+    console.log(feature.feature.attributes);
+    feature.feature.attributes.popup.hide();
+}
+
 setInterval(function(){getBikestationData()},15000);
