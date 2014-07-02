@@ -197,19 +197,40 @@ def subdict(d, keys):
 # Main app function definitions
 # ================
 
-@app.route('/')
+# This is a GET route to display the "view all stations" page
+@app.route('/stations')
+def view_all_stations():
+    return render_template('stations.html')
 
-@app.route('/index')
-def index():
-    return render_template('index.html')
+# This is a GET route to display the "view all bikes" page
+@app.route('/bikes')
+def view_all_bikes():
+    return render_template('bikes.html')
 
+# This is a GET route to display the "view all riders" page
+@app.route('/users')
+def view_all_riders():
+    return render_template('users.html')
+
+# This is a GET route to display the landing page of bikeshare
 @app.route('/')
 def home():
     return render_template('index.html')
 
-@app.route('/user/<name>')
-def user(name):
-    return render_template('user.html',name=name)
+# This is a GET route to display a single bike page of a given name
+@app.route('/bike/<int:bike_id>')
+def view_bike(bike_id):
+    return render_template('bikes.html',bike_id=bike_id)
+
+# This is a GET route to display a single station page of a given name
+@app.route('/station/<int:statio_id>')
+def view_station(station_id):
+    return render_template('stations.html',station_id=station_id)
+
+# This is a GET route to display a single user page of a given name
+@app.route('/user/<int:user_id>')
+def view_user(user_id):
+    return render_template('users.html',user_id=user_id)
 
 @app.route('/javascript/<path:path>', methods=['GET','OPTIONS'])
 def js_proxy(path):
