@@ -865,18 +865,26 @@ function init() {
                   xOffset : 10,
                   yOffset : 10,
                   pointColor : 'blue',
-                  popup : new OpenLayers.Popup("popup" + bikeStationList[i].station_id,
-                                                new OpenLayers.LonLat(longitude,latitude),
-                                                new OpenLayers.Size(200,200),
-                                                "This Is A Popup!",
-                                                true)
+                  popupIndex : i
               };
+              pointFeature.attributes.popup = new OpenLayers.Popup.FramedCloud("Popup", 
+                    point.getBounds().getCenterLonLat(), null,
+                    'BikeStation ' + bikeStationList[i].station_id,
+                     null,
+                    true // <-- true if we want a close (X) button, false otherwise
+                );
               features.push(pointFeature);
               map.addPopup(pointFeature.attributes.popup);
+              map.popups[pointFeature.attributes.popupIndex].hide();
+              /*
+              for (var i = 0; i < map.popups.length; i ++) {
+                    map.popups[i].hide();
+                } */
               featuresToStationIds[i] = bikeStationList[i].station_id;
               map.addLayer(vectorLayer);
               vectorLayer.addFeatures(features);
               map.setCenter(lonlat, zoom); 
+             
             }
             return;
         }
@@ -887,12 +895,26 @@ function init() {
         new OpenLayers.Projection("EPSG:4326"),
         new OpenLayers.Projection("EPSG:900913")
     );
+    bikeLayer = new OpenLayers.Layer.Vector("bikeLayer", {
+        style : {
+            externalGraphic : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/static/ic_launcher32.png",
+            graphicWidth: 21,
+            graphicHeight: 25
+        }
+    });
+    //bikeLayer = new OpenLayers.Layer.Vector("bikeLayer");
     bikeFeature = new OpenLayers.Feature.Vector(bikePoint);
+    /*
     bikeFeature.attributes = {
-        name : '',
-        pointColor : 'green'
+	    externalGraphic : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/static/ic_launcher32.png",
+	    graphicWidth: 21,
+        graphicHeight:25 
     };
-    vectorLayer.addFeatures([bikeFeature]);
+    */
+    bikeLayer.addFeatures([bikeFeature]);
+    map.addLayer(bikeLayer);
+    //bikeLayer.drawFeature(bikeFeature);
+    //vectorLayer.addFeatures([bikeFeature]);
     var report = function(e) {
         console.log("you have moused over this");
     };
@@ -948,10 +970,10 @@ function moveBike() {
         new OpenLayers.Projection("EPSG:4326"),
         new OpenLayers.Projection("EPSG:900913")
     );
-    vectorLayer.removeFeatures([bikeFeature]);
+    bikeLayer.removeFeatures([bikeFeature]);
     bikeFeature.geometry = bikePoint;
-    vectorLayer.addFeatures([bikeFeature]);
-    vectorLayer.redraw();
+    bikeLayer.addFeatures([bikeFeature]);
+    bikeLayer.redraw();
 }
 
 function setRandomPointStuff() {
@@ -967,13 +989,14 @@ function setRandomPointStuff() {
 function featureHighlighted(feature) {
     console.log("Feature hilighted");
     console.log(feature.feature.attributes);
-    feature.feature.attributes.popup.show();
+    //feature.feature.attributes.popup.show();
+    map.popups[feature.feature.attributes.popupIndex].show();
 }
 
 function featureUnhighlighted(feature) {
     console.log("Feature unhilighted");
     console.log(feature.feature.attributes);
-    feature.feature.attributes.popup.hide();
+    map.popups[feature.feature.attributes.popupIndex].hide(); 
 }
 
 setInterval(function(){getBikestationData()},15000);
