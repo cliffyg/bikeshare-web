@@ -871,15 +871,11 @@ function init() {
                     point.getBounds().getCenterLonLat(), null,
                     'BikeStation ' + bikeStationList[i].station_id,
                      null,
-                    true // <-- true if we want a close (X) button, false otherwise
+                    false // <-- true if we want a close (X) button, false otherwise
                 );
               features.push(pointFeature);
               map.addPopup(pointFeature.attributes.popup);
               map.popups[pointFeature.attributes.popupIndex].hide();
-              /*
-              for (var i = 0; i < map.popups.length; i ++) {
-                    map.popups[i].hide();
-                } */
               featuresToStationIds[i] = bikeStationList[i].station_id;
               map.addLayer(vectorLayer);
               vectorLayer.addFeatures(features);
@@ -902,28 +898,15 @@ function init() {
             graphicHeight: 25
         }
     });
-    //bikeLayer = new OpenLayers.Layer.Vector("bikeLayer");
     bikeFeature = new OpenLayers.Feature.Vector(bikePoint);
-    /*
-    bikeFeature.attributes = {
-	    externalGraphic : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/static/ic_launcher32.png",
-	    graphicWidth: 21,
-        graphicHeight:25 
-    };
-    */
     bikeLayer.addFeatures([bikeFeature]);
     map.addLayer(bikeLayer);
-    //bikeLayer.drawFeature(bikeFeature);
-    //vectorLayer.addFeatures([bikeFeature]);
     var report = function(e) {
         console.log("you have moused over this");
     };
      var highlightCtrl = new OpenLayers.Control.SelectFeature(vectorLayer, {
                 hover: true,
-                //highlightOnly: false,
-                //renderIntent: "temporary",
                 eventListeners: {
-                    //beforefeaturehighlighted: featureOver,
                     featurehighlighted: featureHighlighted,
                     featureunhighlighted: featureUnhighlighted 
         }
@@ -989,7 +972,6 @@ function setRandomPointStuff() {
 function featureHighlighted(feature) {
     console.log("Feature hilighted");
     console.log(feature.feature.attributes);
-    //feature.feature.attributes.popup.show();
     map.popups[feature.feature.attributes.popupIndex].show();
 }
 
