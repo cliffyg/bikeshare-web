@@ -1,12 +1,13 @@
 import syslog
-from flask import Flask, request, render_template, send_from_directory
-from flask.ext.bootstrap import Bootstrap
 import json
 import re
-
+import SstoreClient
 from datetime import timedelta
-from flask import make_response, request, current_app
 from functools import update_wrapper
+from flask import Flask, request, render_template, send_from_directory
+from flask import make_response, request, current_app
+from flask.ext.bootstrap import Bootstrap
+
 
 app = Flask(__name__)
 
@@ -14,6 +15,9 @@ bootstrap = Bootstrap(app)
 
 # Set debug mode.
 debug = False
+
+# Create S-Store client object instance
+db = SstoreClient.SstoreClient('localhost', 6000)
 
 # ================
 # REST API function definitions
@@ -48,13 +52,14 @@ def check_login():
 # Response: [ {<int:station_id>,<float:lat>,<float:lon>,<string:address>}, ... ]
 @app.route('/REST/1.0/stations/all')
 def all_stations():
-    try:
-        db = open('/home/dramage/bikeshare-web/data/stations.json','r')
-    except:
-        syslog.syslog(syslog.LOG_ERR, "could not open stations.json")
-
-    data = json.load(db)
-    return json.dumps(data, ensure_ascii=True)
+    proc = 'TestProcedure'
+    data = db.call_proc(proc)
+    if data['success']:
+        return json.dumps(data['data'], ensure_ascii=True)
+    else:
+        log_procerr(proc,data['msg'])
+        return '{}', 500
+    
 # Verb:     GET
 # Route:    /REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>
 # Response: [ {<int:station_id>,<float:lat>,<float:lon>,<string:address>}, ... ]
@@ -193,6 +198,12 @@ def subdict(d, keys):
             d2[k] = v
     return d2
 
+def log_procerr(proc = '', msg = ''):
+    err = 'Exception encountered when calling S-Store procedure "'
+    err += proc + '": ' + msg
+    syslog.syslog(syslog.LOG_ERR, err)
+    return
+
 # ================
 # Main app function definitions
 # ================
@@ -252,7 +263,7 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
     if debug:
-        app.run(host='127.0.0.1', port=8081, debug=True)
+        app.run(host='127.0.0.1', port=8085, debug=True)
     else:
-        app.run(host='0.0.0.0', port=8081, debug=True)
+        app.run(host='0.0.0.0', port=8085, debug=True)
 
