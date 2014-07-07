@@ -49,7 +49,8 @@ def check_login():
 # ---------
 # Verb:     GET
 # Route:    /REST/1.0/stations/all
-# Response: [ {<int:station_id>,<float:lat>,<float:lon>,<string:address>}, ... ]
+# Response: [{<int:STATION_ID>, <string:STATION_NAME>, <int:LATITUDE>,
+#             <int:LONGITUDE>, <string:STREET_ADDRESS>}, ...]
 @app.route('/REST/1.0/stations/all')
 def all_stations():
     proc = 'TestProcedure'
@@ -62,7 +63,8 @@ def all_stations():
     
 # Verb:     GET
 # Route:    /REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>
-# Response: [ {<int:station_id>,<float:lat>,<float:lon>,<string:address>}, ... ]
+# Response: [{<int:STATION_ID>, <string:STATION_NAME>, <int:LATITUDE>,
+#             <int:LONGITUDE>, <string:STREET_ADDRESS>}, ...]
 @app.route('/REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>')
 def all_stations_in_rad(lat, lon, rad):
     return all_stations()
