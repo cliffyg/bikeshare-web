@@ -31,7 +31,6 @@ class SstoreClient(object):
         return
 
     def call_proc(self, proc='', args='', keepalive=False):
-        msg = ''
         try:
             # Connect first, if necessary.
             if not self.connected:
@@ -52,6 +51,7 @@ class SstoreClient(object):
                 self.buf += data
                 data = self.s.recv(1024)
             rtn = json.loads(self.buf)
+            msg = ''
         except Exception as e:
             rtn = json.loads('{"data":[],"success":0}')
             msg = str(e)
