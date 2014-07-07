@@ -1,4 +1,5 @@
 var pointFeature;
+var map;
 var stationLayer;
 var featuresToStationIds = []
 var features = []
@@ -811,8 +812,10 @@ var route = [
 
 function init() {
     map = new OpenLayers.Map("mapdiv");
-    var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "http://bikeshare.cs.pdx.edu/osm/${z}/${x}/${y}.png", {numZoomLevels: 19, crossOriginKeyword: null});
-    map.addLayer(newLayer); 
+    //switch between local and remote tiles
+    var tileLayer = new OpenLayers.Layer.OSM("Local Tiles", "http://bikeshare.cs.pdx.edu/osm/${z}/${x}/${y}.png", {numZoomLevels: 19, crossOriginKeyword: null});
+    //var tileLayer = new OpenLayers.Layer.OSM();
+    map.addLayer(tileLayer); 
     // allow testing of specific renderers via "?renderer=Canvas", etc
     var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
     renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
@@ -843,6 +846,10 @@ function init() {
         }}),
         renderers: renderer
     });
+    stationLayer.events.register("featuresadded", stationLayer, function() {
+        stationLayer.redraw();
+    });
+    map.addLayer(stationLayer);
     var zoom = 14;
       map.setCenter(lonlat, zoom); 
       bikeLayer = new OpenLayers.Layer.Vector("bikeLayer", {
@@ -853,9 +860,6 @@ function init() {
           }
     });
     map.addLayer(bikeLayer);
-    var report = function(e) {
-        console.log("you have moused over this");
-    };
      var highlightCtrl = new OpenLayers.Control.SelectFeature(stationLayer, {
                 hover: true,
                 eventListeners: {
@@ -869,7 +873,6 @@ function init() {
     map.setCenter(lonlat, zoom);
     createBikeshareStationFeatures();
     createBikeFeatures();
-    getBikestationData();
 }
 
 function createBikeFeatures() {
@@ -937,54 +940,123 @@ function setRandomPointStuff() {
 function featureHighlighted(feature) {
     console.log("Feature hilighted");
     console.log(feature.feature.attributes);
-    map.popups[feature.feature.attributes.popupIndex].show();
+    map.popups[feature.feature.attributes.index].show();
 }
 
 function featureUnhighlighted(feature) {
     console.log("Feature unhilighted");
     console.log(feature.feature.attributes);
-    map.popups[feature.feature.attributes.popupIndex].hide(); 
+    map.popups[feature.feature.attributes.index].hide(); 
 }
-
 function createBikeshareStationFeatures() {
-  $.ajax({url : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/REST/1.0/stations/all",
-    success : function(result) {
-        bikeStationList = JSON.parse(result); 
+    $.ajax({url : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/REST/1.0/stations/all",
+    success: function(result) {
+        bikeStationList = JSON.parse(result);
         for (var i = 0; i < bikeStationList.length; i ++) {
-          var latitude = parseFloat(bikeStationList[i].lat);
-          var longitude = parseFloat(bikeStationList[i].lon);
-          var point = new OpenLayers.Geometry.Point(longitude, latitude);
-          point.transform(
-            new OpenLayers.Projection("EPSG:4326"),
-            new OpenLayers.Projection("EPSG:900913")
-          );
-          var pointFeature = new OpenLayers.Feature.Vector(point);
-          pointFeature.attributes = {
-              name : "BikeShare Station " + bikeStationList[i].station_id,
-              favColor : 'black',
-              align : 'cm',
-              xOffset : 10,
-              yOffset : 10,
-              pointColor : 'blue',
-              popupIndex : i
-          };
-          pointFeature.attributes.popup = new OpenLayers.Popup.FramedCloud("Popup", 
-                point.getBounds().getCenterLonLat(), null,
-                'BikeStation ' + bikeStationList[i].station_id,
-                 null,
-                false 
-            );
-          features.push(pointFeature);
-          map.addPopup(pointFeature.attributes.popup);
-          map.popups[pointFeature.attributes.popupIndex].hide();
-          featuresToStationIds[i] = bikeStationList[i].station_id;
-          map.addLayer(stationLayer);
-          stationLayer.addFeatures(features);
+            $.ajax({url : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/REST/1.0/stations/info/" + bikeStationList[i].station_id,
+            success: function(result) {
+                        stationData = JSON.parse(result);
+                        createStationFeature(this.lon,this.lat,this.stationId,stationData.num_bikes,stationData.num_docks,this.stationIndex);
+                    },
+                    stationId : bikeStationList[i].station_id,
+                    lat : bikeStationList[i].lat,
+                    lon : bikeStationList[i].lon,
+                    stationIndex : i 
+            });
         }
-        return;
-    }
-  });
+     }
+   });
 }
 
-setInterval(function(){getBikestationData()},15000);
+function createStationFeature(lon,lat,stationId,bikes,docks,index) {
+   var bikePercent = (bikes/docks) * 100;
+   var pointColor;
+   if (bikePercent > 70) {
+        pointColor = 'blue';
+   } else if (70 > bikePercent >= 40) {
+        pointColor = 'yellow';
+   } else {
+        pointColor = 'red';
+   }
+   var stationPoint = new OpenLayers.Geometry.Point(lon,lat);
+   stationPoint.transform(
+        new OpenLayers.Projection("EPSG:4326"),
+        new OpenLayers.Projection("EPSG:900913")
+   );
+   pointFeature = new OpenLayers.Feature.Vector(stationPoint);
+   pointFeature.attributes = {
+       name : "BikeShare Station " + stationId,
+       favColor : 'black',
+       align : 'cm',
+       xOffset : 10,
+       yOffset : 10,
+       pointColor : pointColor,
+       stationId : stationId,
+       index: index,
+       lat : lat,
+       lon : lon
+   };
+   pointFeature.attributes.popup = new OpenLayers.Popup.FramedCloud("Popup" + stationId,
+        stationPoint.getBounds().getCenterLonLat(), null,
+        'Station ' + stationId + '</br>Bikes ' + bikes + '</br>Docks ' + docks,
+        null,
+        false
+   );
+   stationLayer.addFeatures([pointFeature]);
+   map.addPopup(pointFeature.attributes.popup);
+   for (var j = 0; j < map.popups.length; j ++) {
+        map.popups[j].hide();
+   }
+}
+
+function updateBikestationData() {
+    for (var i = 0; i < map.popups.length; i ++) {
+        map.popups[i].destroy();
+    }
+    for (var i = 0; i < stationLayer.features.length; i ++) {
+        $.ajax({url : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/REST/1.0/stations/info/" + stationLayer.features[i].attributes.stationId,
+             success: function(result) {
+                    stationData = JSON.parse(result);
+                    updateStationFeature(this.lon,this.lat,this.stationId,stationData.num_bikes,stationData.num_docks,this.stationId,this.index);
+              },
+              index : stationLayer.features[i].attributes.index,
+              stationId : stationLayer.features[i].attributes.stationId,
+              lat : stationLayer.features[i].attributes.lat,
+              lon : stationLayer.features[i].attributes.lon,
+              stationId : stationLayer.features[i].attributes.stationId
+       });
+    }
+}
+
+function updateStationFeature(lon,lat,stationId,bikes,docks,stationId,index) {
+    var bikePercent = (bikes/docks) * 100;
+    var pointColor;
+    if (bikePercent > 70) {
+         pointColor = 'blue';
+    } else if (70 > bikePercent >= 40) {
+         pointColor = 'yellow';
+    } else {
+         pointColor = 'red';
+    }
+    stationLayer.features[index].attributes.pointColor = pointColor;
+    stationLayer.redraw();
+   var stationPoint = new OpenLayers.Geometry.Point(lon,lat);
+   stationPoint.transform(
+        new OpenLayers.Projection("EPSG:4326"),
+        new OpenLayers.Projection("EPSG:900913")
+   );
+
+   stationLayer.features[index].attributes.popup = new OpenLayers.Popup.FramedCloud("Popup" + stationId,
+        stationPoint.getBounds().getCenterLonLat(), null,
+        'Station ' + stationId + '</br>Bikes ' + bikes + '</br>Docks ' + docks,
+        null,
+        false
+   );
+   map.addPopup(stationLayer.features[index].attributes.popup);
+   for (var i = 0; i < map.popups.length; i ++) {
+       map.popups[i].hide();
+   }
+}
+
+setInterval(function(){updateBikestationData()},15000);
 setInterval(function(){moveBike()},1000);
