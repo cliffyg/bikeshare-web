@@ -56,7 +56,7 @@ class SstoreClient(object):
             rtn = json.loads('{"data":[],"success":0}')
             msg = str(e)
         finally:
-            rtn['msg'] = msg
+            rtn[u'msg'] = msg
         # If we haven't instructed the connection to stay open, disconnect.
         if not keepalive:
             self.disconnect()
