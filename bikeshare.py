@@ -57,7 +57,7 @@ def all_stations():
     if data['success']:
         return json.dumps(data['data'], ensure_ascii=True)
     else:
-        log_procerr(proc,data['msg'])
+        log_procerr(proc, data['msg'])
         return '{}', 500
     
 # Verb:     GET
