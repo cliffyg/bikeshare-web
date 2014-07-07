@@ -908,7 +908,6 @@ function setStationColor(stationNum,stationData) {
     } else {
         features[stationNum].attributes.pointColor = 'red';
     }
-    console.log(features[stationNum].geometry);	
 }
 function getRandomInt (min, max) {
   	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -938,15 +937,13 @@ function setRandomPointStuff() {
 }
 
 function featureHighlighted(feature) {
-    console.log("Feature hilighted");
-    console.log(feature.feature.attributes);
-    map.popups[feature.feature.attributes.index].show();
+    var popupIndex = getPopupIndex(feature.feature.attributes.popup);
+    map.popups[popupIndex].show();
 }
 
 function featureUnhighlighted(feature) {
-    console.log("Feature unhilighted");
-    console.log(feature.feature.attributes);
-    map.popups[feature.feature.attributes.index].hide(); 
+    var popupIndex = getPopupIndex(feature.feature.attributes.popup);
+    map.popups[popupIndex].hide(); 
 }
 function createBikeshareStationFeatures() {
     $.ajax({url : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/REST/1.0/stations/all",
@@ -1002,8 +999,10 @@ function createStationFeature(lon,lat,stationId,bikes,docks,index) {
         null,
         false
    );
+   console.log(pointFeature.attributes.popup);
    stationLayer.addFeatures([pointFeature]);
    map.addPopup(pointFeature.attributes.popup);
+   //map.popups[index] = pointFeature.attributes.popup;
    for (var j = 0; j < map.popups.length; j ++) {
         map.popups[j].hide();
    }
@@ -1058,5 +1057,14 @@ function updateStationFeature(lon,lat,stationId,bikes,docks,stationId,index) {
    }
 }
 
+function getPopupIndex(popup) {
+    popupIdx = -1;
+    for (var i = 0; i < map.popups.length; i ++) {
+        if (popup.id == map.popups[i].id) {
+            popupIdx = i;
+        }
+    }
+    return popupIdx;
+}
 setInterval(function(){updateBikestationData()},15000);
 setInterval(function(){moveBike()},1000);
