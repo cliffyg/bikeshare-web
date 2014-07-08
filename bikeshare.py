@@ -147,20 +147,23 @@ def checkout_bike():
 # ---------
 # Verb:      POST
 # Route:     /REST/1.0/bikes/checkin
-# Form data: <int:bike_id>,<int:station_id>
-# Response:  {<float:price>,<float:discount>}
+# Form data: <int:station_id>,<int:user_id>
+# Response:  Success (200) / Failure (403)
 @app.route('/REST/1.0/bikes/checkin', methods=['POST'])
 def checkin_bike():
-    db = open('data/checkin.json','r')
-    data = json.load(db)
-    target_station = request.form['station_id']
-    target_bike = request.form['bike_id']
-    if target_station == str(data['station_id']):
-        if data['num_docks'] > 0:
-            price = float(data['price']) - (float(data['price']) * data['discount'])
-            retn = { 'price': price, 'discount': data['discount'] }
-            return json.dumps(retn, ensure_ascii=True)
-    return '{}', 403
+    proc = 'CheckinBike'
+    target_user = int(request.form['user_id'])
+    target_station = int(request.form['station_id'])
+    args = [target_user, target_station]
+    try:
+        data = db.call_proc(proc, args)
+        if data['success']:
+            return json.dumps(data['data'])
+        else:
+            return json.dumps(data['data']), 403
+    except Exception as e:
+        log_procerr(proc, str(e)) 
+        return '{}', 500
 
 # Get/send recent bike positional data
 # ---------
