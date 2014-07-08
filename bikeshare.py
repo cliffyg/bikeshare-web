@@ -17,7 +17,7 @@ bootstrap = Bootstrap(app)
 debug = False
 
 # Create S-Store client object instance
-db = SstoreClient.SstoreClient('localhost', 6000)
+db = SstoreClient.SstoreClient()
 
 # ================
 # REST API function definitions
@@ -54,13 +54,13 @@ def check_login():
 @app.route('/REST/1.0/stations/all')
 def all_stations():
     proc = 'TestProcedure'
-    data = db.call_proc(proc)
-    if data['success']:
-        return json.dumps(data['data'], ensure_ascii=True)
-    else:
-        log_procerr(proc, data['msg'])
+    try:
+        data = db.call_proc(proc)
+        return json.dumps(data['data'])
+    except Exception as e:
+        log_procerr(proc,str(e))
         return '{}', 500
-    
+
 # Verb:     GET
 # Route:    /REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>
 # Response: [{<int:STATION_ID>, <string:STATION_NAME>, <int:LATITUDE>,
@@ -129,13 +129,19 @@ def bike_info(bike_id):
 # Response:  {<int:bike_id>}
 @app.route('/REST/1.0/bikes/checkout', methods=['POST'])
 def checkout_bike():
-    db = open('data/checkout.json','r')
-    data = json.load(db)
-    target_station = request.form['station_id']
-    if target_station == str(data['station_id']):
-        bikes = data['bikes']
-        return json.dumps(bikes[0], ensure_ascii=True)
-    return '{}', 403
+    proc = 'CheckoutBike'
+    target_rider = 1450
+    target_station = int(request.form['station_id'])
+    args = [target_rider, target_station]
+    try:
+        data = db.call_proc(proc, args)
+        if data['success']:
+            return json.dumps(data['data'])
+        else:
+            return json.dumps(data['data']), 403
+    except Exception as e:
+        log_procerr(proc, str(e)) 
+        return '{}', 500
 
 # Checkin bike
 # ---------
