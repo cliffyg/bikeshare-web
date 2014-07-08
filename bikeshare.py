@@ -125,14 +125,14 @@ def bike_info(bike_id):
 # ---------
 # Verb:      POST
 # Route:     /REST/1.0/bikes/checkout
-# Form data: <int:station_id>
-# Response:  {<int:bike_id>}
+# Form data: <int:station_id>,<int:user_id>
+# Response:  Success (200) / Failure (403)
 @app.route('/REST/1.0/bikes/checkout', methods=['POST'])
 def checkout_bike():
     proc = 'CheckoutBike'
-    target_rider = 1450
+    target_user = int(request.form['user_id'])
     target_station = int(request.form['station_id'])
-    args = [target_rider, target_station]
+    args = [target_user, target_station]
     try:
         data = db.call_proc(proc, args)
         if data['success']:
