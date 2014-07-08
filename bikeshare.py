@@ -167,17 +167,10 @@ def checkin_bike():
 
 # Get/send recent bike positional data
 # ---------
-# Helper function which calls either the get or send version of this function,
-# depending on which HTTP verb is used.
-@app.route('/REST/1.0/bikes/pos/<int:bike_id>', methods=['GET','POST'])
-def bike_pos(bike_id):
-    if request.method == 'GET':
-        return get_bike_position(bike_id)
-    else:
-        return send_bike_position(bike_id)
 # Verb:     GET
 # Route:    /REST/1.0/bikes/pos/<int:bike_id>
 # Response: [ {<float:lat>,<float:lon>,<int:time>}, ... ]
+@app.route('/REST/1.0/bikes/pos/<int:bike_id>')
 def get_bike_position(bike_id):
     s = 'data/bikepos_' + str(bike_id) + '.json'
     try:
@@ -187,18 +180,25 @@ def get_bike_position(bike_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 # Verb:      POST
-# Route:     /REST/1.0/bikes/pos/<int:bike_id>
-# Form data: <float:lat>,<float:lon>
-# Response:  {}
-def send_bike_position(bike_id):
-    lat = request.form['lat']
-    lon = request.form['lon']
-    s = 'data/bikepos_' + str(bike_id) + '.json'
+# Route:     /REST/1.0/bikes/pos
+# Form data: <int:user_id>,<float:lat>,<float:lon>
+# Response:  Success (200) / Failure (403)
+@app.route('/REST/1.0/bikes/pos', methods=['POST'])
+def send_bike_position():
+    proc = 'RideBike'
+    user = int(request.form['user_id'])
+    lat = float(request.form['lat'])
+    lon = float(request.form['lon'])
+    args = [user, lat, lon]
     try:
-        db = open(s,'r')
-    except IOError:
-        return '{}', 404
-    return '{}'
+        data = db.call_proc(proc, args)
+        if data['success']:
+            return json.dumps(data['data'])
+        else:
+            return json.dumps(data['data']), 403
+    except Exception as e:
+        log_procerr(proc, str(e)) 
+        return '{}', 500
 
 # Helper function. Extracts and returns only the set of key/value pairs that
 # we want from a given dict.
