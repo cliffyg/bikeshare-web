@@ -39,7 +39,7 @@ class sstoreclient(object):
         self.connect()
         return True
 
-    def call_proc(self, proc='', args=[], keepalive=False):
+    def call_proc(self, proc='', args=[], keepalive=True):
         # Connect first, if necessary.
         if not self.connected:
             self.connect()
