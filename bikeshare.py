@@ -1,13 +1,13 @@
 import syslog
+from flask import Flask, request, render_template, send_from_directory
+from flask.ext.bootstrap import Bootstrap
 import json
 import re
-import SstoreClient
-from datetime import timedelta
-from functools import update_wrapper
-from flask import Flask, request, render_template, send_from_directory
-from flask import make_response, request, current_app
-from flask.ext.bootstrap import Bootstrap
 
+from datetime import timedelta
+from flask import make_response, request, current_app
+from functools import update_wrapper
+import SstoreClient
 
 app = Flask(__name__)
 
