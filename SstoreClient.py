@@ -1,5 +1,4 @@
 import socket
-import time
 import json
 
 # Class which acts as an interface to S-Store.
@@ -40,7 +39,7 @@ class SstoreClient(object):
         self.connect()
         return True
 
-    def call_proc(self, proc='', args='', keepalive=False):
+    def call_proc(self, proc='', args=[], keepalive=False):
         # Connect first, if necessary.
         if not self.connected:
             self.connect()
@@ -55,23 +54,17 @@ class SstoreClient(object):
             call['args'] += [arg]
         # Send JSON to the database client, then receive results.
         try:
-            self.pipe.write(json.dumps(call, ensure_ascii=True) + "\n")
+            self.pipe.write(json.dumps(call) + "\n")
             self.pipe.flush()
         except Exception as e:
             # If socket was terminated prematurely, attempt to reconnect.
             if e.errno == 32:
                 self.reconnect()
-                self.pipe.write(json.dumps(call, ensure_ascii=True) + "\n")
+                self.pipe.write(json.dumps(call) + "\n")
                 self.pipe.flush()
             else:
                 raise e
         self.buf = self.pipe.readline()
-        if self.buf == '':
-            # If socket was terminated prematurely, attempt to reconnect.
-            self.reconnect()
-            self.pipe.write(json.dumps(call, ensure_ascii=True) + "\n")
-            self.pipe.flush()
-            self.buf = self.pipe.readline()
         rtn = json.loads(self.buf)
         # If we haven't instructed the connection to stay open, disconnect.
         if not keepalive:
