@@ -27,11 +27,13 @@ class sstoreclient(object):
     def disconnect(self):
         try:
             self.s.close()
-            self.pipe.close()
         finally:
             self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            self.pipe.close()
+        finally:
             self.pipe = self.s.makefile()
-            self.connected = False
+        self.connected = False
         return True
 
     def reconnect(self):
