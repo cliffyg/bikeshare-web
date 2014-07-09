@@ -7,7 +7,7 @@ import re
 from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
-import SstoreClient
+import sstoreclient
 
 app = Flask(__name__)
 
@@ -17,7 +17,7 @@ bootstrap = Bootstrap(app)
 debug = False
 
 # Create S-Store client object instance
-db = SstoreClient.SstoreClient()
+db = sstoreclient.sstoreclient()
 
 # ================
 # REST API function definitions

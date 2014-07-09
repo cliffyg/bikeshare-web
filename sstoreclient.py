@@ -2,7 +2,7 @@ import socket
 import json
 
 # Class which acts as an interface to S-Store.
-class SstoreClient(object):
+class sstoreclient(object):
     addr = None
     port = None
     s = None
