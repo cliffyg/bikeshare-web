@@ -72,10 +72,10 @@ def all_stations():
     proc = 'Stations'
     try:
         data = db.call_proc(proc)
-        return json.dumps(data['data'])
     except Exception as e:
         log_procerr(proc,str(e))
         return '{}', 500
+    return json.dumps(data['data'])
 
 # Verb:     GET
 # Route:    /REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>
