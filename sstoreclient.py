@@ -41,7 +41,7 @@ class sstoreclient(object):
         self.connect()
         return True
 
-    def call_proc(self, proc='', args=[], keepalive=True):
+    def call_proc(self, proc='', args=[], keepalive=False):
         # Connect first, if necessary.
         if not self.connected:
             self.connect()
@@ -57,7 +57,16 @@ class sstoreclient(object):
         # Send JSON to the database client, then receive results.
         try:
             self.pipe.write(json.dumps(call) + "\n")
-            self.pipe.flush()
+            try:
+                self.pipe.flush()
+            except Exception as e:
+                # If socket was terminated prematurely, attempt to reconnect.
+                if e.errno == 32:
+                    self.reconnect()
+                    self.pipe.write(json.dumps(call) + "\n")
+                    self.pipe.flush()
+                else:
+                    raise e
         except Exception as e:
             # If socket was terminated prematurely, attempt to reconnect.
             if e.errno == 32:
