@@ -34,13 +34,31 @@ db = sstoreclient.sstoreclient()
 # Response:  {<int:user_id>}
 @app.route('/REST/1.0/login/check', methods=['POST'])
 def check_login():
-    db = open('data/users.json','r')
-    data = json.load(db)
+    # TODO: This procedure works but is inefficient; we should implement a
+    # procedure in S-Store which takes the user_name as an argument and does
+    # the needful.
+    proc = 'Users'
     target_user = request.form['user_name']
-    for u in data:
-        if u['user_name'] == target_user:
-            return json.dumps(subdict(u, ['user_id']), ensure_ascii=True)
-    return '{}', 404
+    try:
+        # Get User data from S-Store
+        data = db.call_proc(proc)
+    # Failure cases
+    except Exception as e:
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,str(e))
+        return '{}', 500
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '{}', 500
+    # Success case
+    else:
+        # Check if given user is a valid user, and return USER_ID if so.
+        users = data['data']
+        for user in users:
+            if user['USER_NAME'] == target_user:
+                return json.dumps(subdict(user,'USER_ID'))
+        return '{}', 404
 
 # Stations
 # =========
