@@ -124,15 +124,28 @@ def stations_info(station_id):
 # ---------
 # Verb:     GET
 # Route:    /REST/1.0/bikes/active
-# Response: [ {<int:bike_id>,<float:lat>,<float:lon>}, ... ]
+# Response: [ {<int:USER_ID>,<float:LATITUDE>,<float:LONGITUDE>}, ... ]
 @app.route('/REST/1.0/bikes/active')
 def active_bikes():
-    db = open('data/bikes.json','r')
-    data = json.load(db)
-    return json.dumps(data, ensure_ascii=True)
+    proc = 'BikeStatus'
+    try:
+        # Get data from S-Store.
+        data = db.call_proc(proc)
+    # Failure cases
+    except Exception as e:
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,str(e))
+        return '{}', 500
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '{}', 500
+    # Success case
+    else:
+        return json.dumps(data['data'])
 # Verb:     GET
 # Route:    /REST/1.0/bikes/active/<float:lat>/<float:lon>/<float:rad>
-# Response: [ {<int:bike_id>,<float:lat>,<float:lon>}, ... ]
+# Response: [ {<int:USER_ID>,<float:LATITUDE>,<float:LONGITUDE>}, ... ]
 @app.route('/REST/1.0/bikes/active/<float:lat>/<float:lon>/<float:rad>')
 def active_bikes_in_rad(lat, lon, rad):
     return active_bikes()
