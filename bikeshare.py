@@ -34,14 +34,11 @@ db = sstoreclient.sstoreclient()
 # Response:  {<int:USER_ID>}
 @app.route('/REST/1.0/login/check', methods=['POST'])
 def check_login():
-    # TODO: This procedure works but is inefficient; we should implement a
-    # procedure in S-Store which takes the user_name as an argument and does
-    # the needful.
-    proc = 'Users'
-    target_user = request.form['user_name']
+    proc = 'FindUser'
+    args = [request.form['user_name']]
     try:
-        # Get User data from S-Store
-        data = db.call_proc(proc)
+        # Get data from S-Store.
+        data = db.call_proc(proc,args)
     # Failure cases
     except Exception as e:
         # Client failed to connect to or get data from S-Store.
@@ -53,12 +50,13 @@ def check_login():
         return '{}', 500
     # Success case
     else:
-        # Check if given user is a valid user, and return USER_ID if so.
+        # TODO: Figure out what makes sense in the schema to use as a unique
+        # token for login purposes.
         users = data['data']
-        for user in users:
-            if user['USER_NAME'] == target_user:
-                return json.dumps(subdict(user,'USER_ID'))
-        return '{}', 404
+        if len(users) > 0:
+            return json.dumps(subdict(data['data'][0],'USER_ID'))
+        else:
+            return '{}', 404
 
 # Stations
 # =========
