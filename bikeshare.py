@@ -241,17 +241,12 @@ def checkin_bike():
 # Get/send recent bike positional data
 # ---------
 # Verb:     GET
-# Route:    /REST/1.0/bikes/pos/<int:bike_id>
-# Response: [ {<float:lat>,<float:lon>,<int:time>}, ... ]
-@app.route('/REST/1.0/bikes/pos/<int:bike_id>')
-def get_bike_position(bike_id):
-    s = 'data/bikepos_' + str(bike_id) + '.json'
-    try:
-        db = open(s,'r')
-    except IOError:
-        return '{}', 404
-    data = json.load(db)
-    return json.dumps(data, ensure_ascii=True)
+# Route:    /REST/1.0/bikes/pos/<int:user_id>
+# Response: {<int:USER_ID>,<float:LATITUDE>,<float:LONGITUDE>}
+@app.route('/REST/1.0/bikes/pos/<int:user_id>')
+def get_bike_position(user_id):
+    # TODO: This function is currently redundant.
+    return bike_info(user_id)
 # Verb:      POST
 # Route:     /REST/1.0/bikes/pos
 # Form data: <int:user_id>,<float:lat>,<float:lon>
