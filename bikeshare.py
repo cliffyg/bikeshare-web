@@ -210,14 +210,20 @@ def checkin_bike():
     target_station = int(request.form['station_id'])
     args = [target_user, target_station]
     try:
-        data = db.call_proc(proc, args)
-        if data['success']:
-            return json.dumps(data['data'])
-        else:
-            return json.dumps(data['data']), 403
+        # Get data from S-Store.
+        data = db.call_proc(proc,args)
+    # Failure cases
     except Exception as e:
-        log_procerr(proc, str(e)) 
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,str(e))
         return '{}', 500
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '{}', 500
+    # Success case
+    else:
+        return json.dumps(data['data'])
 
 # Get/send recent bike positional data
 # ---------
