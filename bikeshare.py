@@ -153,18 +153,31 @@ def active_bikes_in_rad(lat, lon, rad):
 # Get individual bike info
 # ---------
 # Verb:     GET
-# Route:    /REST/1.0/bikes/info/<int:bike_id>
-# Response: {<float:lat>,<float:lon>,<float:distance>,<int:time>,
-#            <[ string, ... ]:reports>}
-@app.route('/REST/1.0/bikes/info/<int:bike_id>')
-def bike_info(bike_id):
-    s = 'data/bike_' + str(bike_id) + '.json'
+# Route:    /REST/1.0/bikes/info/<int:user_id>
+# Response: {<int:USER_ID>,<float:LATITUDE>,<float:LONGITUDE>}
+@app.route('/REST/1.0/bikes/info/<int:user_id>')
+def bike_info(user_id):
+    proc = 'GetBikeStatus'
+    args = [user_id]
     try:
-        db = open(s,'r')
-    except IOError:
-        return '{}', 404
-    data = json.load(db)
-    return json.dumps(data, ensure_ascii=True)
+        # Get data from S-Store.
+        data = db.call_proc(proc,args)
+    # Failure cases
+    except Exception as e:
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,str(e))
+        return '{}', 500
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '{}', 500
+    # Success case
+    else:
+        bikedata = data['data']
+        if len(bikedata) > 0:
+            return json.dumps(bikedata[0])
+        else:
+            return '{}', 404
 
 # Checkout bike
 # ---------
