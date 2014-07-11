@@ -31,7 +31,7 @@ db = sstoreclient.sstoreclient()
 # Verb:      POST
 # Route:     /REST/1.0/login/check
 # Form data: <string:user_name>
-# Response:  {<int:user_id>}
+# Response:  {<int:USER_ID>}
 @app.route('/REST/1.0/login/check', methods=['POST'])
 def check_login():
     # TODO: This procedure works but is inefficient; we should implement a
@@ -71,7 +71,7 @@ def check_login():
 #             <int:LONGITUDE>, <string:STREET_ADDRESS>}, ...]
 @app.route('/REST/1.0/stations/all')
 def all_stations():
-    proc = 'TestProcedure'
+    proc = 'Stations'
     try:
         data = db.call_proc(proc)
         return json.dumps(data['data'])
