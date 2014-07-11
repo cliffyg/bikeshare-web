@@ -268,6 +268,86 @@ def send_bike_position():
         log_procerr(proc, str(e)) 
         return '{}', 500
 
+# Other API functions
+# ========
+
+# Get general statistics
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/stats
+# Response: {<int:BIKES>,<int:ACTIVE_BIKES>,<int:STATIONS>,<int:USERS>,
+#            <int:BIKES_PER_STATION}
+@app.route('/REST/1.0/stats')
+def get_stats():
+    stats = dict()
+    stats['BIKES'], stats['ACTIVE_BIKES'] = get_bikestats()
+    stats['STATIONS'] = get_stationstats()
+    stats['USERS'] = get_userstats()
+    stats['BIKES_PER_STATION'] = stats['BIKES'] // stats['STATIONS']
+    return json.dumps(stats)
+
+# Get statistics about bikes.
+def get_bikestats():
+    proc = 'Bikes'
+    try:
+        # Get data from S-Store.
+        data = db.call_proc(proc)
+    # Failure cases
+    except Exception as e:
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,str(e))
+        return '?'
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '?'
+    # Success case
+    else:
+        bikes = data['data']
+        active = 0
+        for bike in bikes:
+            if bike['CURRENT_STATUS'] == 2:
+                active = active + 1
+        return len(data['data']), active
+
+# Get statistics about stations.
+def get_stationstats():
+    proc = 'Stations'
+    try:
+        # Get data from S-Store.
+        data = db.call_proc(proc)
+    # Failure cases
+    except Exception as e:
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,str(e))
+        return '?'
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '?'
+    # Success case
+    else:
+        return len(data['data'])
+
+# Get statistics about users.
+def get_userstats():
+    proc = 'Users'
+    try:
+        # Get data from S-Store.
+        data = db.call_proc(proc)
+    # Failure cases
+    except Exception as e:
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,str(e))
+        return '?'
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '?'
+    # Success case
+    else:
+        return len(data['data'])
+
 # Helper function. Extracts and returns only the set of key/value pairs that
 # we want from a given dict.
 def subdict(d, keys):
