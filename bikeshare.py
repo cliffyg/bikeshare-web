@@ -91,17 +91,29 @@ def all_stations_in_rad(lat, lon, rad):
 # ---------
 # Verb:     GET
 # Route:    /REST/1.0/stations/info/<int:station_id>
-# Response: {<int:num_bikes>,<int:num_docks>,<string:address>,<float:price>}
+# Response: {<int:STATION_ID>,<string:STATION_NAME>,<string:STREET_ADDRESS>,
+#            <int:LATITUDE>,<int:LONGITUDE>,<int:CURRENT_BIKES>,
+#            <int:CURRENT_DOCKS>,<float:CURRENT_BIKE_DISCOUNT>,
+#            <float:CURRENT_DOCK_DISCOUNT>}
 @app.route('/REST/1.0/stations/info/<int:station_id>')
 def stations_info(station_id):
-    s = '/home/dramage/bikeshare-web/data/station_' + str(station_id) + '.json'
-    print s
+    proc = 'GetStationStatus'
+    args = [station_id]
     try:
-        db = open(s,'r')
-    except IOError:
-        return '{}', 404
-    data = json.load(db)
-    return json.dumps(data, ensure_ascii=True)
+        # Get data from S-Store.
+        data = db.call_proc(proc,args)
+    # Failure cases
+    except Exception as e:
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,str(e))
+        return '{}', 500
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '{}', 500
+    # Success case
+    else:
+        return json.dumps(data['data'])
 
 # Bikes
 # ========
