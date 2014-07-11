@@ -111,7 +111,11 @@ def stations_info(station_id):
         return '{}', 500
     # Success case
     else:
-        return json.dumps(data['data'])
+        stations = data['data']
+        if len(stations) > 0:
+            return json.dumps(stations[0])
+        else:
+            return '{}', 404
 
 # Bikes
 # ========
