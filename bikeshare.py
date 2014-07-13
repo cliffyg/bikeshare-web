@@ -219,9 +219,9 @@ def checkout_bike():
 @app.route('/REST/1.0/bikes/checkin', methods=['POST'])
 def checkin_bike():
     proc = 'CheckinBike'
-    target_user = int(request.form['user_id'])
-    target_station = int(request.form['station_id'])
-    args = [target_user, target_station]
+    user = int(request.form['user_id'])
+    station = int(request.form['station_id'])
+    args = [user, station]
     try:
         # Get data from S-Store.
         data = db.call_proc(proc,args)
@@ -232,8 +232,13 @@ def checkin_bike():
         return '{}', 500
     if not data['success']:
         # DB procedure execution failed.
-        log_procerr(proc,str(data['error']))
-        return '{}', 500
+        nobikestr = 'Rider ' + str(user) + ' does not have a bike checked out'
+        if re.search(nobikestr,data['error']):
+            # User cannot checkin a bike if they haven't checked one out.
+            return '{}', 403
+        else:
+            log_procerr(proc,str(data['error']))
+            return '{}', 500
     # Success case
     else:
         return json.dumps(data['data'])
