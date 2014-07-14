@@ -201,7 +201,7 @@ def checkout_bike():
         return '{}', 500
     if not data['success']:
         # DB procedure execution failed.
-        nobikestr = 'There are no bikes availible at station' + str(station)
+        nobikestr = 'There are no bikes availible at station: ' + str(station)
         alreadystr = 'User ' + str(user) + ' already has a bike checked out'
         if re.search(nobikestr,data['error']):
             return '{}', 404
