@@ -184,7 +184,7 @@ def bike_info(user_id):
 # Verb:      POST
 # Route:     /REST/1.0/bikes/checkout
 # Form data: <int:station_id>,<int:user_id>
-# Response:  Success (200) / Failure (403, 404)
+# Response:  Success (200) / Failure (403)
 @app.route('/REST/1.0/bikes/checkout', methods=['POST'])
 def checkout_bike():
     proc = 'CheckoutBike'
@@ -201,11 +201,8 @@ def checkout_bike():
         return '{}', 500
     if not data['success']:
         # DB procedure execution failed.
-        nobikestr = 'There are no bikes availible at station: ' + str(station)
-        alreadystr = 'User ' + str(user) + ' already has a bike checked out'
-        if re.search(nobikestr,data['error']):
-            return '{}', 404
-        elif re.search(alreadystr,data['error']):
+        errstr = 'Rider: ' + str(user) + ' was unable to checkout a bike'
+        if re.search(errstr,data['error']):
             return '{}', 403
         else:
             log_procerr(proc,str(data['error']))
@@ -236,9 +233,8 @@ def checkin_bike():
         return '{}', 500
     if not data['success']:
         # DB procedure execution failed.
-        nobikestr = 'Rider ' + str(user) + ' does not have a bike checked out'
-        if re.search(nobikestr,data['error']):
-            # User cannot checkin a bike if they haven't checked one out.
+        errstr = 'Rider: ' + str(user) + ' was unable to checkin a bike'
+        if re.search(errstr,data['error']):
             return '{}', 403
         else:
             log_procerr(proc,str(data['error']))
