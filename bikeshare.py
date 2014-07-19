@@ -26,6 +26,35 @@ db = sstoreclient.sstoreclient()
 # Logins
 # ========
 
+# User registration
+# ---------
+# Verb:      POST
+# Route:     /REST/1.0/login/signup
+# Form data: <string:first_name>,<string:last_name>
+# Response:  {<int:USER_ID>}
+@app.route('/REST/1.0/login/signup', methods=['POST'])
+def user_signup():
+    proc = 'SignUpName'
+    fname = request.form['first_name']
+    lname = request.form['last_name']
+    args = [fname,lname]
+    try:
+        # Get data from S-Store.
+        data = db.call_proc(proc,args)
+    # Failure cases
+    except Exception as e:
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,str(e))
+        return '{}', 500
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '{}', 500
+    # Success case
+    else:
+        users = data['data']
+        return json.dumps(users[0])
+
 # User login
 # ---------
 # Verb:      POST
