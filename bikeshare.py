@@ -120,8 +120,7 @@ def all_stations_in_rad(lat, lon, rad):
 # Route:    /REST/1.0/stations/info/<int:station_id>
 # Response: {<int:STATION_ID>,<string:STATION_NAME>,<string:STREET_ADDRESS>,
 #            <int:LATITUDE>,<int:LONGITUDE>,<int:CURRENT_BIKES>,
-#            <int:CURRENT_DOCKS>,<float:CURRENT_BIKE_DISCOUNT>,
-#            <float:CURRENT_DOCK_DISCOUNT>}
+#            <int:CURRENT_DOCKS>,<int:CURRENT_DISCOUNT>
 @app.route('/REST/1.0/stations/info/<int:station_id>')
 def stations_info(station_id):
     proc = 'GetStationStatus'
