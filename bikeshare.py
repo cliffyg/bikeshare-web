@@ -271,15 +271,8 @@ def checkin_bike():
     else:
         return json.dumps(data['data'])
 
-# Get/send recent bike positional data
+# Send recent bike positional data
 # ---------
-# Verb:     GET
-# Route:    /REST/1.0/bikes/pos/<int:user_id>
-# Response: {<int:USER_ID>,<float:LATITUDE>,<float:LONGITUDE>}
-@app.route('/REST/1.0/bikes/pos/<int:user_id>')
-def get_bike_position(user_id):
-    # TODO: This function is currently redundant.
-    return bike_info(user_id)
 # Verb:      POST
 # Route:     /REST/1.0/bikes/pos
 # Form data: <int:user_id>,<float:lat>,<float:lon>
