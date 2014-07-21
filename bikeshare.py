@@ -156,7 +156,7 @@ def stations_info(station_id):
 # Response: [ {<int:USER_ID>,<float:LATITUDE>,<float:LONGITUDE>}, ... ]
 @app.route('/REST/1.0/bikes/active')
 def active_bikes():
-    proc = 'BikeStatus'
+    proc = 'UserLocations'
     try:
         # Get data from S-Store.
         data = db.call_proc(proc)
