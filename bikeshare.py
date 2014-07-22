@@ -26,6 +26,35 @@ db = sstoreclient.sstoreclient()
 # Logins
 # ========
 
+# User registration
+# ---------
+# Verb:      POST
+# Route:     /REST/1.0/login/signup
+# Form data: <string:first_name>,<string:last_name>
+# Response:  {<int:USER_ID>}
+@app.route('/REST/1.0/login/signup', methods=['POST'])
+def user_signup():
+    proc = 'SignUpName'
+    fname = request.form['first_name']
+    lname = request.form['last_name']
+    args = [fname,lname]
+    try:
+        # Get data from S-Store.
+        data = db.call_proc(proc,args)
+    # Failure cases
+    except Exception as e:
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,str(e))
+        return '{}', 500
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '{}', 500
+    # Success case
+    else:
+        users = data['data']
+        return json.dumps(users[0])
+
 # User login
 # ---------
 # Verb:      POST
@@ -91,8 +120,7 @@ def all_stations_in_rad(lat, lon, rad):
 # Route:    /REST/1.0/stations/info/<int:station_id>
 # Response: {<int:STATION_ID>,<string:STATION_NAME>,<string:STREET_ADDRESS>,
 #            <int:LATITUDE>,<int:LONGITUDE>,<int:CURRENT_BIKES>,
-#            <int:CURRENT_DOCKS>,<float:CURRENT_BIKE_DISCOUNT>,
-#            <float:CURRENT_DOCK_DISCOUNT>}
+#            <int:CURRENT_DOCKS>,<int:CURRENT_DISCOUNT>
 @app.route('/REST/1.0/stations/info/<int:station_id>')
 def stations_info(station_id):
     proc = 'GetStationStatus'
@@ -127,7 +155,7 @@ def stations_info(station_id):
 # Response: [ {<int:USER_ID>,<float:LATITUDE>,<float:LONGITUDE>}, ... ]
 @app.route('/REST/1.0/bikes/active')
 def active_bikes():
-    proc = 'BikeStatus'
+    proc = 'UserLocations'
     try:
         # Get data from S-Store.
         data = db.call_proc(proc)
@@ -201,11 +229,8 @@ def checkout_bike():
         return '{}', 500
     if not data['success']:
         # DB procedure execution failed.
-        nobikestr = 'There are no bikes availible at station: ' + str(station)
-        alreadystr = 'User ' + str(user) + ' already has a bike checked out'
-        if re.search(nobikestr,data['error']):
-            return '{}', 404
-        elif re.search(alreadystr,data['error']):
+        errstr = 'Rider: ' + str(user) + ' was unable to checkout a bike'
+        if re.search(errstr,data['error']):
             return '{}', 403
         else:
             log_procerr(proc,str(data['error']))
@@ -236,9 +261,8 @@ def checkin_bike():
         return '{}', 500
     if not data['success']:
         # DB procedure execution failed.
-        nobikestr = 'Rider ' + str(user) + ' does not have a bike checked out'
-        if re.search(nobikestr,data['error']):
-            # User cannot checkin a bike if they haven't checked one out.
+        errstr = 'Rider: ' + str(user) + ' was unable to checkin a bike'
+        if re.search(errstr,data['error']):
             return '{}', 403
         else:
             log_procerr(proc,str(data['error']))
@@ -247,15 +271,8 @@ def checkin_bike():
     else:
         return json.dumps(data['data'])
 
-# Get/send recent bike positional data
+# Send recent bike positional data
 # ---------
-# Verb:     GET
-# Route:    /REST/1.0/bikes/pos/<int:user_id>
-# Response: {<int:USER_ID>,<float:LATITUDE>,<float:LONGITUDE>}
-@app.route('/REST/1.0/bikes/pos/<int:user_id>')
-def get_bike_position(user_id):
-    # TODO: This function is currently redundant.
-    return bike_info(user_id)
 # Verb:      POST
 # Route:     /REST/1.0/bikes/pos
 # Form data: <int:user_id>,<float:lat>,<float:lon>
