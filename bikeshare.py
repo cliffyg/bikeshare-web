@@ -417,7 +417,7 @@ def home():
     data = r.json()
     return render_template('index.html', bikes=data['BIKES'],
             active_bikes = data['ACTIVE_BIKES'], stations=data['STATIONS'],
-            users=data['USERS'], bps=['BIKES_PER_STATION'])
+            users=data['USERS'], bikes_per_station=data['BIKES_PER_STATION'])
 
 # This is a GET route to display a single bike page of a given name
 @app.route('/bike/<int:bike_id>')
