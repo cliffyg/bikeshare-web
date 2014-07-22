@@ -212,7 +212,7 @@ def bike_info(user_id):
 # Verb:      POST
 # Route:     /REST/1.0/bikes/checkout
 # Form data: <int:station_id>,<int:user_id>
-# Response:  Success (200) / Failure (403, 404)
+# Response:  Success (200) / Failure (403)
 @app.route('/REST/1.0/bikes/checkout', methods=['POST'])
 def checkout_bike():
     proc = 'CheckoutBike'
