@@ -8,6 +8,7 @@ from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
 import sstoreclient
+import requests
 
 app = Flask(__name__)
 
@@ -411,7 +412,12 @@ def view_all_riders():
 # This is a GET route to display the landing page of bikeshare
 @app.route('/')
 def home():
-    return render_template('index.html')
+    statsurl = 'http://bikeshare.cs.pdx.edu/REST/1.0/stats'
+    r = requests.get(statsurl)
+    data = r.json()
+    return render_template('index.html', bikes=data['BIKES'],
+            active_bikes = data['ACTIVE_BIKES'], stations=data['STATIONS'],
+            users=data['USERS'], bps=['BIKES_PER_STATION'])
 
 # This is a GET route to display a single bike page of a given name
 @app.route('/bike/<int:bike_id>')
