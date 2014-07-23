@@ -8,6 +8,7 @@ from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
 import sstoreclient
+import requests
 
 app = Flask(__name__)
 
@@ -18,6 +19,7 @@ debug = False
 
 # Create S-Store client object instance
 db = sstoreclient.sstoreclient()
+apiurl = 'http://localhost'
 
 # ================
 # REST API function definitions
@@ -411,7 +413,15 @@ def view_all_riders():
 # This is a GET route to display the landing page of bikeshare
 @app.route('/')
 def home():
-    return render_template('index.html')
+    apiroute = '/REST/1.0/stats'
+    r = requests.get(apiurl + apiroute)
+    if r.status_code == 200:
+        data = r.json()
+        return render_template('index.html', bikes=data['BIKES'],
+            active_bikes = data['ACTIVE_BIKES'], stations=data['STATIONS'],
+            users=data['USERS'], bikes_per_station=data['BIKES_PER_STATION'])
+    else:
+        return render_template('index.html')
 
 # This is a GET route to display a single bike page of a given name
 @app.route('/bike/<int:bike_id>')
