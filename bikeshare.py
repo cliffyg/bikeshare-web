@@ -294,7 +294,8 @@ def checkin_bike():
 # Verb:      POST
 # Route:     /REST/1.0/bikes/pos
 # Form data: <int:user_id>,<float:lat>,<float:lon>
-# Response:  Success (200) / Failure (403)
+# Response:  Success (200)
+#            Failure (401) - User does not exist
 @app.route('/REST/1.0/bikes/pos', methods=['POST'])
 def send_bike_position():
     proc = 'RideBike'
@@ -303,14 +304,27 @@ def send_bike_position():
     lon = float(request.form['lon'])
     args = [user, lat, lon]
     try:
+        # Get data from S-Store.
         data = db.call_proc(proc, args)
-        if data['success']:
-            return json.dumps(data['data'])
-        else:
-            return json.dumps(data['data']), 403
+    # Failure cases
     except Exception as e:
+        # Client failed to connect to or get data from S-Store.
         log_procerr(proc, str(e)) 
         return '{}', 500
+    if not data['success']:
+        # DB procedure execution failed.
+        nouserstr = 'Rider: ' + str(user) + ' does not exist'
+        nobikestr = 'Rider: ' + str(user) + ' does not have a bike checked out'
+        if re.search(nouserstr,data['error']):
+            return '{}', 401 # Unauthorized
+        elif re.search(nobikestr,data['error']):
+            return '{}', 403 # Forbidden
+        else:
+            log_procerr(proc,str(data['error']))
+            return '{}', 500
+    # Success case
+    else:
+        return json.dumps(data['data'])
 
 # Other API functions
 # ========
