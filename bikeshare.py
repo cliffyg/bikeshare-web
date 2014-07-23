@@ -212,7 +212,10 @@ def bike_info(user_id):
 # Verb:      POST
 # Route:     /REST/1.0/bikes/checkout
 # Form data: <int:station_id>,<int:user_id>
-# Response:  Success (200) / Failure (403)
+# Response:  Success (200)
+#            Failure (401) - User does not exist
+#            Failure (403) - User already has a bike checked out
+#            Failure (503) - No bikes available at station
 @app.route('/REST/1.0/bikes/checkout', methods=['POST'])
 def checkout_bike():
     proc = 'CheckoutBike'
@@ -229,9 +232,15 @@ def checkout_bike():
         return '{}', 500
     if not data['success']:
         # DB procedure execution failed.
-        errstr = 'Rider: ' + str(user) + ' was unable to checkout a bike'
-        if re.search(errstr,data['error']):
-            return '{}', 403
+        nouserstr = 'Rider: ' + str(user) + ' does not exist'
+        alreadystr = 'Rider: ' + str(user) + ' already has a bike checked out'
+        nobikestr = 'Rider: ' + str(user) + ' was unable to checkout a bike'
+        if re.search(nouserstr,data['error']):
+            return '{}', 401 # Unauthorized
+        elif re.search(alreadystr,data['error']):
+            return '{}', 403 # Forbidden
+        elif re.search(nobikestr,data['error']):
+            return '{}', 503 # Service Unavailable
         else:
             log_procerr(proc,str(data['error']))
             return '{}', 500
@@ -244,7 +253,10 @@ def checkout_bike():
 # Verb:      POST
 # Route:     /REST/1.0/bikes/checkin
 # Form data: <int:station_id>,<int:user_id>
-# Response:  Success (200) / Failure (403)
+# Response:  Success (200)
+#            Failure (401) - User does not exist
+#            Failure (403) - User does not have a bike to checkin
+#            Failure (503) - No docks available at station
 @app.route('/REST/1.0/bikes/checkin', methods=['POST'])
 def checkin_bike():
     proc = 'CheckinBike'
@@ -261,9 +273,15 @@ def checkin_bike():
         return '{}', 500
     if not data['success']:
         # DB procedure execution failed.
-        errstr = 'Rider: ' + str(user) + ' was unable to checkin a bike'
-        if re.search(errstr,data['error']):
-            return '{}', 403
+        nouserstr = 'Rider: ' + str(user) + ' does not exist'
+        nobikestr = 'Rider ' + str(user) + ' does not have a bike checked out'
+        nodockstr = 'Rider: ' + str(user) + ' was unable to checkin a bike'
+        if re.search(nouserstr,data['error']):
+            return '{}', 401 # Unauthorized
+        elif re.search(nobikestr,data['error']):
+            return '{}', 403 # Forbidden
+        elif re.search(nodockstr,data['error']):
+            return '{}', 503 # Service Unavailable
         else:
             log_procerr(proc,str(data['error']))
             return '{}', 500
