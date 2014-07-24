@@ -84,7 +84,7 @@ function createBikeFeatures() {
 }
 
 function createRiderFeatures() {
-    $.ajax({url :  "http://bikeshare.cs.pdx.edu/REST/1.0/riders/location",
+    $.ajax({url :  "http://bikeshare.cs.pdx.edu/REST/1.0/bikes/active",
         success : function(result) {
             createRiderPoints(result.rider_locations);
         }
@@ -135,7 +135,7 @@ function getRandomInt (min, max) {
 
 
 function getRiderData() {
-    $.ajax({url :  "http://bikeshare.cs.pdx.edu/REST/1.0/riders/location",
+    $.ajax({url :  "http://bikeshare.cs.pdx.edu/REST/1.0/bikes/active",
         success : function(result) {
             updateRiderPoints(result.rider_locations);
         }
@@ -290,5 +290,5 @@ function getPopupIndex(popup) {
     }
     return popupIdx;
 }
-setInterval(function(){updateBikestationData()},15000);
+//setInterval(function(){updateBikestationData()},15000);
 //setInterval(function(){getRiderData()},1000);

@@ -3,7 +3,7 @@ from flask import Flask, request, render_template, send_from_directory
 from flask.ext.bootstrap import Bootstrap
 import json
 import re
-
+import syslog
 from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
@@ -42,6 +42,7 @@ def user_signup():
     args = [fname,lname]
     try:
         # Get data from S-Store.
+        syslog.syslog(syslog.LOG_INFO, "called proc %s with fname %s lname %s " % (proc,fname,lname))
         data = db.call_proc(proc,args)
     # Failure cases
     except Exception as e:
@@ -69,6 +70,7 @@ def check_login():
     args = [request.form['user_name']]
     try:
         # Get data from S-Store.
+        syslog.syslog(syslog.LOG_INFO, "called proc %s with user_name %s" % (proc,request.form['user_name']))
         data = db.call_proc(proc,args)
     # Failure cases
     except Exception as e:
@@ -102,6 +104,7 @@ def check_login():
 def all_stations():
     proc = 'Stations'
     try:
+        syslog.syslog(syslog.LOG_INFO, "called proc %s" % proc)
         data = db.call_proc(proc)
     except Exception as e:
         log_procerr(proc,str(e))
@@ -129,6 +132,7 @@ def stations_info(station_id):
     args = [station_id]
     try:
         # Get data from S-Store.
+        syslog.syslog(syslog.LOG_INFO,"called proc %s with station id %s" % (proc,station_id))
         data = db.call_proc(proc,args)
     # Failure cases
     except Exception as e:
@@ -160,6 +164,7 @@ def active_bikes():
     proc = 'UserLocations'
     try:
         # Get data from S-Store.
+        syslog.syslog(syslog.LOG_INFO, "called proc %s" % proc)
         data = db.call_proc(proc)
     # Failure cases
     except Exception as e:
@@ -191,6 +196,7 @@ def bike_info(user_id):
     args = [user_id]
     try:
         # Get data from S-Store.
+        syslog.syslog(syslog.LOG_INFO,"called proc %s with user_id %s" % (proc,user_id))
         data = db.call_proc(proc,args)
     # Failure cases
     except Exception as e:
@@ -226,6 +232,7 @@ def checkout_bike():
     args = [user, station]
     try:
         # Get data from S-Store.
+        syslog.syslog(syslog.LOG_INFO,"called proc %s with user %s station %s" % (proc,user,station))
         data = db.call_proc(proc,args)
     # Failure cases
     except Exception as e:
@@ -267,6 +274,7 @@ def checkin_bike():
     args = [user, station]
     try:
         # Get data from S-Store.
+        syslog.syslog(syslog.LOG_INFO, "called proc %s with user %s station %s" % (proc,user,station))
         data = db.call_proc(proc,args)
     # Failure cases
     except Exception as e:
@@ -307,6 +315,7 @@ def send_bike_position():
     args = [user, lat, lon]
     try:
         # Get data from S-Store.
+        syslog.syslog(syslog.LOG_INFO, "called proc %s with user %s lat %s lon %s" % (proc,user,lat,lon))
         data = db.call_proc(proc, args)
     # Failure cases
     except Exception as e:
@@ -351,6 +360,7 @@ def get_bikestats():
     proc = 'Bikes'
     try:
         # Get data from S-Store.
+        syslog.syslog(syslog.LOG_INFO, "called proc %s" % proc)
         data = db.call_proc(proc)
     # Failure cases
     except Exception as e:
@@ -375,6 +385,7 @@ def get_stationstats():
     proc = 'Stations'
     try:
         # Get data from S-Store.
+        syslog.syslog(syslog.LOG_INFO, "called proc %s" % proc)
         data = db.call_proc(proc)
     # Failure cases
     except Exception as e:
@@ -394,6 +405,7 @@ def get_userstats():
     proc = 'Users'
     try:
         # Get data from S-Store.
+        syslog.syslog(syslog.LOG_INFO, "called proc %s" %proc)
         data = db.call_proc(proc)
     # Failure cases
     except Exception as e:
