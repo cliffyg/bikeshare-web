@@ -430,7 +430,14 @@ def log_procerr(proc = '', msg = ''):
 # This is a GET route to display the "view all stations" page
 @app.route('/stations')
 def view_all_stations():
-    return render_template('stations.html')
+    apiroute = '/REST/1.0/stations/all'
+    r = requests.get(apiurl + apiroute)
+    if r.status_code == 200:
+        data = r.json()
+        return render_template('stations.html',stations_list=data,
+            list_len=len(data))
+    else:
+        return render_template('404.html')
 
 # This is a GET route to display the "view all bikes" page
 @app.route('/bikes')
@@ -458,11 +465,28 @@ def home():
 # This is a GET route to display a single bike page of a given name
 @app.route('/bike/<int:bike_id>')
 def view_bike(bike_id):
-    return render_template('bike.html',bike_id=bike_id)
+    apiroute = '/REST/1.0/bikes/info/bike_id'
+    r = requests.get(apiurl + apiroute)
+    if r.status_code == 200:
+        data = r.json()
+        return render_template('bike.html',bike_id=bike_id, 
+            user_id=data['USER_ID'], lat=data['LATITUDE'],
+            lon=data['LONGITUDE'])
+    else:
+        return render_template('bike.html',bike_id=bike_id)
 
 # This is a GET route to display a single station page of a given name
 @app.route('/station/<int:station_id>')
 def view_station(station_id):
+    apiroute = '/REST/1.0/bikes/info/station_id'
+    r = requests.get(apiurl + apiroute)
+    if r.status_code == 200:
+        data = r.json()
+        return render_template('station.html',station_id=station_id,
+            name=data['STATION_NAME'],addr=data['STREET_ADDRESS'],
+            lat=data['LATITUDE'],lon=data['LONGITUDE'],
+            num_bikes=data['CURRENT_BIKES'],num_docks=data['CURRENT_DOCKS'],
+            discount=data['CURRENT_DISCOUNT'])
     return render_template('station.html',station_id=station_id)
 
 # This is a GET route to display a single user page of a given name
@@ -490,7 +514,7 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
     if debug:
-        app.run(host='127.0.0.1', port=8081, debug=True)
+        app.run(host='127.0.0.1', port=8082, debug=True)
     else:
-        app.run(host='0.0.0.0', port=8081, debug=True)
+        app.run(host='0.0.0.0', port=8082, debug=True)
 

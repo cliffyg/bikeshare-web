@@ -4,7 +4,8 @@
 
 {% block page_content %}
 <h2><p class="text-center">Bike ID: {{ bike_id }}</p></h2>
-<p class="text-center">Current Location:</p>
+<p class="text-center">Current Location:({{ lat }},{{ lon }})</p>
+<p class="text-center">Current User: {{ user_id }}</p>
 <div class="row">
     <div class="col-sm-9">
         <div class="widget">

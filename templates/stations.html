@@ -42,24 +42,20 @@
             <thead>
                 <tr>
                     <td>Station ID</td>
+                    <td>Station Name</td>
                     <td>Address</td>
-                    <td>Total docks</td>
-                    <td>Available bikes</td>
+                    <td>Location</td>
                 </tr>
             </thead>
             <tbody>
+                {% for i in range(0,1): %}
                 <tr>
-                    <td>1</td>
-                    <td></td>
-                    <td>10</td>
-                    <td>4</td>
+                    <td>{{ stations_list[i]['STATION_ID'] }}</td>
+                    <td>{{ stations_list[i]['STATION_NAME'] }}</td>
+                    <td>{{ stations_list[i]['STREET_ADDRESS'] }}</td>
+                    <td>({{ stations_list[i]['LATITUDE'] }},{{ stations_list[i]['LONGITUDE'] }})</td>
                 </tr>
-                <tr>
-                    <td>2</td>
-                    <td></td>
-                    <td>10</td>
-                    <td>2</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
