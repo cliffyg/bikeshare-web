@@ -170,7 +170,7 @@ def active_bikes():
         return '{}', 500
     # Success case
     else:
-        return jsonify(data['data'])
+        return jsonify({"bikes" : data['data']})
 # Verb:     GET
 # Route:    /REST/1.0/bikes/active/<float:lat>/<float:lon>/<float:rad>
 # Response: [ {<int:USER_ID>,<float:LATITUDE>,<float:LONGITUDE>}, ... ]
