@@ -84,9 +84,9 @@ function createBikeFeatures() {
 }
 
 function createRiderFeatures() {
-    $.ajax({url :  "http://bikeshare.cs.pdx.edu/REST/1.0/bikes/active",
+    $.ajax({url :  "http://api.bikeshare.cs.pdx.edu/REST/1.0/bikes/active",
         success : function(result) {
-            createRiderPoints(result.rider_locations);
+            createRiderPoints(result['bikes']);
         }
     });
 }
@@ -95,19 +95,21 @@ function createRiderFeatures() {
 
 function createRiderPoints(rider_locations) {
     for (var i = 0; i < rider_locations.length; i ++ ) {
-        var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['location'][0],rider_locations[i]['location'][1]);
+        var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
         bikePoint.transform(
             new OpenLayers.Projection("EPSG:4326"),
             new OpenLayers.Projection("EPSG:900913")
         );
-        riderFeatures[rider_locations[i]['rider_id']] = new OpenLayers.Feature.Vector(bikePoint);
-        bikeLayer.addFeatures([riderFeatures[rider_locations[i]['rider_id']]]);
+        riderFeatures[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint);
+    
+        bikeLayer.addFeatures([riderFeatures[rider_locations[i]['USER_ID']]]);
     }
     bikeLayer.redraw();
 }
 function getBikestationData() {
     for (var i = 0; i < featuresToStationIds.length; i ++) {
-       $.ajax({ url : "http://bikeshare.cs.pdx.edu/REST/1.0/stations/info/" + featuresToStationIds[i],
+       $.ajax({ url : "http://api.bikeshare.cs.pdx.edu/REST/1.0/stations/info/" + featuresToStationIds[i],
+            crossDomain : true,
             success : function(result) {
                 stationData = JSON.parse(result);
                 setStationColor(this.stationFeatureId,stationData);  
@@ -135,9 +137,10 @@ function getRandomInt (min, max) {
 
 
 function getRiderData() {
-    $.ajax({url :  "http://bikeshare.cs.pdx.edu/REST/1.0/bikes/active",
+    $.ajax({url :  "http://api.bikeshare.cs.pdx.edu/REST/1.0/bikes/active",
+        crossDomain : true,
         success : function(result) {
-            updateRiderPoints(result.rider_locations);
+            updateRiderPoints(result['bikes']);
         }
     });
 }
@@ -147,14 +150,18 @@ function updateRiderPoints(rider_locations) {
         bikeLayer.removeFeatures([feature]);
     }
     for (var i = 0; i < rider_locations.length; i ++ ) {
-        var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['location'][0],rider_locations[i]['location'][1]);
+        var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
         bikePoint.transform(
             new OpenLayers.Projection("EPSG:4326"),
             new OpenLayers.Projection("EPSG:900913")
         );
-        bikeLayer.removeFeatures([riderFeatures[rider_locations[i]['rider_id']]]);
-        riderFeatures[rider_locations[i]['rider_id']].geometry = bikePoint;
-        bikeLayer.addFeatures([riderFeatures[rider_locations[i]['rider_id']]]);
+        bikeLayer.removeFeatures([riderFeatures[rider_locations[i]['USER_ID']]]);
+        if (rider_locations[i]['USER_ID'] in riderFeatures) {
+            riderFeatures[rider_locations[i]['USER_ID']].geometry = bikePoint;
+        } else {
+            riderFeatures[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint);
+        }
+        bikeLayer.addFeatures([riderFeatures[rider_locations[i]['USER_ID']]]);
     }
     bikeLayer.redraw();
 }
@@ -170,18 +177,22 @@ function featureUnhighlighted(feature) {
     map.popups[popupIndex].hide(); 
 }
 function createBikeshareStationFeatures() {
-    $.ajax({url : "http://bikeshare.cs.pdx.edu/REST/1.0/stations/all",
+    $.ajax({url : "http://api.bikeshare.cs.pdx.edu/REST/1.0/stations/all",
+    crossDomain : true,
     success: function(result) {
-        bikeStationList = JSON.parse(result);
+      //  bikeStationList = JSON.parse(result);
+        bikeStationList = result['stations'];
         for (var i = 0; i < bikeStationList.length; i ++) {
-            $.ajax({url : "http://bikeshare.cs.pdx.edu/REST/1.0/stations/info/" + bikeStationList[i].STATION_ID,
+            $.ajax({url : "http://api.bikeshare.cs.pdx.edu/REST/1.0/stations/info/" + bikeStationList[i].STATION_ID,
+            crossDomain: true,
             success: function(result) {
-                        stationData = JSON.parse(result);
+                        //stationData = JSON.parse(result);
+                        stationData = result;
                         createStationFeature(this.lon,this.lat,this.stationName,stationData.CURRENT_BIKES,stationData.CURRENT_DOCKS,this.stationIndex,this.stationId);
                     },
                     stationName : bikeStationList[i].STATION_NAME, 
-                    lon : bikeStationList[i].LATITUDE, //these are flipped in the database, keeping everything else sane
-                    lat: bikeStationList[i].LONGITUDE,
+                    lat : bikeStationList[i].LATITUDE, 
+                    lon: bikeStationList[i].LONGITUDE,
                     stationIndex : i,
                     stationId : bikeStationList[i].STATION_ID
             });
@@ -237,9 +248,9 @@ function updateBikestationData() {
         map.popups[i].destroy();
     }
     for (var featureId in stationFeatures) {
-        $.ajax({url : "http://bikeshare.cs.pdx.edu/REST/1.0/stations/info/" + featureId,
+        $.ajax({url : "http://api.bikeshare.cs.pdx.edu/REST/1.0/stations/info/" + featureId,
             success : function(results) {
-                 stationData = JSON.parse(results);
+                 stationData = results;
                  updateStationFeature(this.featureId,stationData);
                 },
                 featureId : featureId
@@ -264,8 +275,6 @@ function updateStationFeature(stationId,stationData) {
          new OpenLayers.Projection("EPSG:4326"),
          new OpenLayers.Projection("EPSG:900913")
     );  
-    console.log(stationFeatures[stationId].attributes.lon);
-    console.log(stationFeatures[stationId].attributes.lat); 
     stationFeatures[stationId].attributes.popup = new OpenLayers.Popup.FramedCloud("Popup" + stationId,
          stationPoint.getBounds().getCenterLonLat(), null,
          'Station ' + stationFeatures[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS'],
@@ -290,5 +299,5 @@ function getPopupIndex(popup) {
     }
     return popupIdx;
 }
-//setInterval(function(){updateBikestationData()},15000);
-//setInterval(function(){getRiderData()},1000);
+setInterval(function(){updateBikestationData()},15000);
+setInterval(function(){getRiderData()},1000);
