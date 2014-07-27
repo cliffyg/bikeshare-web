@@ -48,12 +48,12 @@
                 </tr>
             </thead>
             <tbody>
-                {% for i in range(0,1): %}
+                {% for station in stations_list: %}
                 <tr>
-                    <td>{{ stations_list[i]['STATION_ID'] }}</td>
-                    <td>{{ stations_list[i]['STATION_NAME'] }}</td>
-                    <td>{{ stations_list[i]['STREET_ADDRESS'] }}</td>
-                    <td>({{ stations_list[i]['LATITUDE'] }},{{ stations_list[i]['LONGITUDE'] }})</td>
+                    <td>{{ station['STATION_ID'] }}</td>
+                    <td>{{ station['STATION_NAME'] }}</td>
+                    <td>{{ station['STREET_ADDRESS'] }}</td>
+                    <td>({{ station['LATITUDE'] }},{{ station['LONGITUDE'] }})</td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -28,7 +28,7 @@ def view_all_stations():
     r = requests.get(apiurl + apiroute)
     if r.status_code == 200:
         data = r.json()
-        return render_template('stations.html',stations_list=data,
+        return render_template('stations.html',stations_list=data['stations'],
             list_len=len(data))
     else:
         return render_template('404.html')
@@ -36,12 +36,26 @@ def view_all_stations():
 # This is a GET route to display the "view all bikes" page
 @app.route('/bikes')
 def view_all_bikes():
-    return render_template('bikes.html')
+    apiroute = '/REST/1.0/bikes/all'
+    r = requests.get(apiurl + apiroute)
+    if r.status_code == 200:
+        data = r.json()
+        print data['bikes']
+        return render_template('bikes.html', bikes=data['bikes'])
+    else:
+        return render_template('500.html')
 
 # This is a GET route to display the "view all riders" page
 @app.route('/users')
 def view_all_riders():
-    return render_template('users.html')
+    apiroute = '/REST/1.0/stats'
+    r = requests.get(apiurl + apiroute)
+    if r.status_code == 200:
+        data = r.json()
+        print data['USERS']
+        return render_template('users.html', users=data['USERS'])
+    else:
+        return render_template('500.html')
 
 # This is a GET route to display the landing page of bikeshare
 @app.route('/')
@@ -59,20 +73,21 @@ def home():
 # This is a GET route to display a single bike page of a given name
 @app.route('/bike/<int:bike_id>')
 def view_bike(bike_id):
-    apiroute = '/REST/1.0/bikes/info/bike_id'
+    apiroute = '/REST/1.0/bikes/info/' + str(bike_id)
     r = requests.get(apiurl + apiroute)
     if r.status_code == 200:
         data = r.json()
+        print data
         return render_template('bike.html',bike_id=bike_id, 
             user_id=data['USER_ID'], lat=data['LATITUDE'],
             lon=data['LONGITUDE'])
     else:
-        return render_template('bike.html',bike_id=bike_id)
+        return render_template('500.html')
 
 # This is a GET route to display a single station page of a given name
 @app.route('/station/<int:station_id>')
 def view_station(station_id):
-    apiroute = '/REST/1.0/bikes/info/station_id'
+    apiroute = '/REST/1.0/stations/info/' + str(station_id)
     r = requests.get(apiurl + apiroute)
     if r.status_code == 200:
         data = r.json()
@@ -81,7 +96,8 @@ def view_station(station_id):
             lat=data['LATITUDE'],lon=data['LONGITUDE'],
             num_bikes=data['CURRENT_BIKES'],num_docks=data['CURRENT_DOCKS'],
             discount=data['CURRENT_DISCOUNT'])
-    return render_template('station.html',station_id=station_id)
+    else:
+        return render_template('500.html')
 
 # This is a GET route to display a single user page of a given name
 @app.route('/user/<int:user_id>')
