@@ -8,13 +8,14 @@ var routePoint = 0;
 var bikeFeature;
 var riderFeatures = {};
 var stationFeatures = {};
+var osmUrl = "http://bikeshare.cs.pdx.edu/osm";
+var iconUrl = "http://bikeshare.cs.pdx.edu/static/ic_launcher32.png";
+var apiUrl = "http://api.bikeshare.cs.pdx.edu";
 function init() {
     map = new OpenLayers.Map("mapdiv");
     //switch between local and remote tiles
-    var tileLayer = new OpenLayers.Layer.OSM("Local Tiles", "http://bikeshare.cs.pdx.edu/osm/${z}/${x}/${y}.png", {numZoomLevels: 19, crossOriginKeyword: null});
-    //var tileLayer = new OpenLayers.Layer.OSM();
+    var tileLayer = new OpenLayers.Layer.OSM("Local Tiles", osmUrl + "/${z}/${x}/${y}.png", {numZoomLevels: 19, crossOriginKeyword: null});
     map.addLayer(tileLayer); 
-    // allow testing of specific renderers via "?renderer=Canvas", etc
     var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
     renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
     var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
@@ -52,7 +53,7 @@ function init() {
       map.setCenter(lonlat, zoom); 
       bikeLayer = new OpenLayers.Layer.Vector("bikeLayer", {
           style : {
-              externalGraphic : "http://bikeshare.cs.pdx.edu/static/ic_launcher32.png",
+              externalGraphic : iconUrl,
               graphicWidth: 21,
               graphicHeight: 25
           }
@@ -84,7 +85,7 @@ function createBikeFeatures() {
 }
 
 function createRiderFeatures() {
-    $.ajax({url :  "http://api.bikeshare.cs.pdx.edu/REST/1.0/bikes/active",
+    $.ajax({url :  apiUrl + "/REST/1.0/bikes/active",
         success : function(result) {
             createRiderPoints(result['bikes']);
         }
@@ -101,14 +102,13 @@ function createRiderPoints(rider_locations) {
             new OpenLayers.Projection("EPSG:900913")
         );
         riderFeatures[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint);
-    
         bikeLayer.addFeatures([riderFeatures[rider_locations[i]['USER_ID']]]);
     }
     bikeLayer.redraw();
 }
 function getBikestationData() {
     for (var i = 0; i < featuresToStationIds.length; i ++) {
-       $.ajax({ url : "http://api.bikeshare.cs.pdx.edu/REST/1.0/stations/info/" + featuresToStationIds[i],
+       $.ajax({ url : apiUrl + "/REST/1.0/stations/info/" + featuresToStationIds[i],
             crossDomain : true,
             success : function(result) {
                 stationData = JSON.parse(result);
@@ -137,7 +137,7 @@ function getRandomInt (min, max) {
 
 
 function getRiderData() {
-    $.ajax({url :  "http://api.bikeshare.cs.pdx.edu/REST/1.0/bikes/active",
+    $.ajax({url :  apiUrl +  "/REST/1.0/bikes/active",
         crossDomain : true,
         success : function(result) {
             updateRiderPoints(result['bikes']);
@@ -146,16 +146,13 @@ function getRiderData() {
 }
 
 function updateRiderPoints(rider_locations) {
-    for (feature in bikeLayer.features) {
-        bikeLayer.removeFeatures([feature]);
-    }
+    bikeLayer.removeFeatures(bikeLayer.features);
     for (var i = 0; i < rider_locations.length; i ++ ) {
         var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
         bikePoint.transform(
             new OpenLayers.Projection("EPSG:4326"),
             new OpenLayers.Projection("EPSG:900913")
         );
-        bikeLayer.removeFeatures([riderFeatures[rider_locations[i]['USER_ID']]]);
         if (rider_locations[i]['USER_ID'] in riderFeatures) {
             riderFeatures[rider_locations[i]['USER_ID']].geometry = bikePoint;
         } else {
@@ -177,16 +174,14 @@ function featureUnhighlighted(feature) {
     map.popups[popupIndex].hide(); 
 }
 function createBikeshareStationFeatures() {
-    $.ajax({url : "http://api.bikeshare.cs.pdx.edu/REST/1.0/stations/all",
+    $.ajax({url : apiUrl + "/REST/1.0/stations/all",
     crossDomain : true,
     success: function(result) {
-      //  bikeStationList = JSON.parse(result);
         bikeStationList = result['stations'];
         for (var i = 0; i < bikeStationList.length; i ++) {
-            $.ajax({url : "http://api.bikeshare.cs.pdx.edu/REST/1.0/stations/info/" + bikeStationList[i].STATION_ID,
+            $.ajax({url : apiUrl + "/REST/1.0/stations/info/" + bikeStationList[i].STATION_ID,
             crossDomain: true,
             success: function(result) {
-                        //stationData = JSON.parse(result);
                         stationData = result;
                         createStationFeature(this.lon,this.lat,this.stationName,stationData.CURRENT_BIKES,stationData.CURRENT_DOCKS,this.stationIndex,this.stationId);
                     },
@@ -248,7 +243,7 @@ function updateBikestationData() {
         map.popups[i].destroy();
     }
     for (var featureId in stationFeatures) {
-        $.ajax({url : "http://api.bikeshare.cs.pdx.edu/REST/1.0/stations/info/" + featureId,
+        $.ajax({url : apiUrl + "/REST/1.0/stations/info/" + featureId,
             success : function(results) {
                  stationData = results;
                  updateStationFeature(this.featureId,stationData);
