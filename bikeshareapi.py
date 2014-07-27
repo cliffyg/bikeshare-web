@@ -15,9 +15,6 @@ bootstrap = Bootstrap(app)
 # Set debug mode.
 debug = False
 
-# Create S-Store client object instance
-db = sstoreclient.sstoreclient()
-
 # ================
 # REST API function definitions
 # ================
@@ -33,6 +30,7 @@ db = sstoreclient.sstoreclient()
 # Response:  {<int:USER_ID>}
 @app.route('/REST/1.0/login/signup', methods=['POST'])
 def user_signup():
+    db = sstoreclient.sstoreclient()
     proc = 'SignUpName'
     fname = request.form['first_name']
     lname = request.form['last_name']
@@ -62,6 +60,7 @@ def user_signup():
 # Response:  {<int:USER_ID>}
 @app.route('/REST/1.0/login/check', methods=['POST'])
 def check_login():
+    db = sstoreclient.sstoreclient()
     proc = 'FindUser'
     args = [request.form['user_name']]
     try:
@@ -98,6 +97,7 @@ def check_login():
 #                           <string:STREET_ADDRESS>}, ...] }
 @app.route('/REST/1.0/stations/all')
 def all_stations():
+    db = sstoreclient.sstoreclient()
     proc = 'Stations'
     try:
         data = db.call_proc(proc)
@@ -123,6 +123,7 @@ def all_stations_in_rad(lat, lon, rad):
 #            <int:CURRENT_DOCKS>,<int:CURRENT_DISCOUNT>
 @app.route('/REST/1.0/stations/info/<int:station_id>')
 def stations_info(station_id):
+    db = sstoreclient.sstoreclient()
     proc = 'GetStationStatus'
     args = [station_id]
     try:
@@ -155,6 +156,7 @@ def stations_info(station_id):
 # Response: [ {<int:USER_ID>,<float:LATITUDE>,<float:LONGITUDE>}, ... ]
 @app.route('/REST/1.0/bikes/active')
 def active_bikes():
+    db = sstoreclient.sstoreclient()
     proc = 'UserLocations'
     try:
         # Get data from S-Store.
@@ -185,6 +187,7 @@ def active_bikes_in_rad(lat, lon, rad):
 # Response: {<int:USER_ID>,<float:LATITUDE>,<float:LONGITUDE>}
 @app.route('/REST/1.0/bikes/info/<int:user_id>')
 def bike_info(user_id):
+    db = sstoreclient.sstoreclient()
     proc = 'GetBikeStatus'
     args = [user_id]
     try:
@@ -218,6 +221,7 @@ def bike_info(user_id):
 #            Failure (503) - No bikes available at station
 @app.route('/REST/1.0/bikes/checkout', methods=['POST'])
 def checkout_bike():
+    db = sstoreclient.sstoreclient()
     proc = 'CheckoutBike'
     user = int(request.form['user_id'])
     station = int(request.form['station_id'])
@@ -259,6 +263,7 @@ def checkout_bike():
 #            Failure (503) - No docks available at station
 @app.route('/REST/1.0/bikes/checkin', methods=['POST'])
 def checkin_bike():
+    db = sstoreclient.sstoreclient()
     proc = 'CheckinBike'
     user = int(request.form['user_id'])
     station = int(request.form['station_id'])
@@ -298,6 +303,7 @@ def checkin_bike():
 #            Failure (401) - User does not exist
 @app.route('/REST/1.0/bikes/pos', methods=['POST'])
 def send_bike_position():
+    db = sstoreclient.sstoreclient()
     proc = 'RideBike'
     user = int(request.form['user_id'])
     lat = float(request.form['lat'])
@@ -346,6 +352,7 @@ def get_stats():
 
 # Get statistics about bikes.
 def get_bikestats():
+    db = sstoreclient.sstoreclient()
     proc = 'Bikes'
     try:
         # Get data from S-Store.
@@ -370,6 +377,7 @@ def get_bikestats():
 
 # Get statistics about stations.
 def get_stationstats():
+    db = sstoreclient.sstoreclient()
     proc = 'Stations'
     try:
         # Get data from S-Store.
@@ -389,6 +397,7 @@ def get_stationstats():
 
 # Get statistics about users.
 def get_userstats():
+    db = sstoreclient.sstoreclient()
     proc = 'Users'
     try:
         # Get data from S-Store.
