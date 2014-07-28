@@ -169,7 +169,7 @@ def stations_info(station_id):
 # Bikes
 # ========
 
-# Get nearby bikes
+# Get all bikes
 # ---------
 # Verb:     GET
 # Route:    /REST/1.0/bikes/all
