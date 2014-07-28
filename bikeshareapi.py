@@ -19,6 +19,26 @@ debug = False
 # REST API function definitions
 # ================
 
+# Users
+# ========
+
+# Get all users
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/users/all
+# Response: { "users": [{<string:CREDIT_CARD>, <int:MEMBERSHIP_STATUS>,
+#                        <int:USER_ID>, <string:USER_NAME>}, ...] }
+@app.route('/REST/1.0/users/all')
+def all_users():
+    db = sstoreclient.sstoreclient()
+    proc = 'Users'
+    try:
+        data = db.call_proc(proc)
+    except Exception as e:
+        log_procerr(proc,str(e))
+        return '{}', 500
+    return jsonify({"users" : data['data']})
+
 # Logins
 # ========
 
