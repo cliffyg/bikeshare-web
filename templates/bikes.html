@@ -17,10 +17,13 @@
                             Bike ID
                         </option>
                         <option value="">
-                            Address 
+                            Current Status 
                         </option>
                         <option value="">
-                            Status 
+                            Current Station 
+                        </option>
+                        <option value="">
+                            Current User
                         </option>
                     </select>
                 </div>
@@ -33,21 +36,20 @@
             <thead>
                 <tr>
                     <td>Bike ID</td>
-                    <td>Address</td>
-                    <td>Available?</td>
+                    <td>Current Status</td>
+                    <td>Current Station</td>
+                    <td>Current User</td>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td></td>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td></td>
-                    <td>No</td>
-                </tr>
+                {% for bike in bikes: %}
+                    <tr>
+                        <td>{{ bike['BIKE_ID'] }}</td>
+                        <td>{{ bike['CURRENT_STATUS'] }}</td>
+                        <td>{{ bike['STATION_ID'] if (bike['STATION_ID'] >= 0) else 'N/A' }}</td>
+                        <td>{{ bike['USER_ID'] if (bike['USER_ID'] >= 0) else 'N/A' }}</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

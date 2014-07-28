@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block title %}All Users{% endblock %}
-
 {% block page_content %}
 <div class="widget">
     <div class="widget-header">
@@ -17,19 +16,13 @@
                             User ID
                         </option>
                         <option value="">
-                            Username 
+                            User Name 
                         </option>
                         <option value="">
                             Credit Card
                         </option>
                         <option value="">
                             Membership Status
-                        </option>
-                        <option value="">
-                            Membership Expires (Increasing)
-                        </option>
-                        <option value="">
-                            Membership Expires (Decreasing)
                         </option>
                     </select>
                 </div>
@@ -42,24 +35,20 @@
             <thead>
                 <tr>
                     <td>User ID</td>
-                    <td>Username</td>
+                    <td>User Name</td>
                     <td>Membership Status</td>
-                    <td>Membership Expires</td>
+                    <td>Credit Card</td>
                 </tr>
             </thead>
             <tbody>
+                {% for user in users: %}                
                 <tr>
-                    <td>1</td>
-                    <td>Thor</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ user['USER_ID'] }}</td>
+                    <td>{{ user['USER_NAME'] }}</td>
+                    <td>{{ user['MEMBERSHIP_STATUS'] }}</td>
+                    <td>{{ user['CREDIT_CARD'] }}</td>
                 </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Bobby</td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

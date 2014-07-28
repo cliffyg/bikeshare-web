@@ -31,7 +31,7 @@ def view_all_stations():
         return render_template('stations.html',stations_list=data['stations'],
             list_len=len(data))
     else:
-        return render_template('404.html')
+        return render_template('500.html')
 
 # This is a GET route to display the "view all bikes" page
 @app.route('/bikes')
@@ -40,7 +40,6 @@ def view_all_bikes():
     r = requests.get(apiurl + apiroute)
     if r.status_code == 200:
         data = r.json()
-        print data['bikes']
         return render_template('bikes.html', bikes=data['bikes'])
     else:
         return render_template('500.html')
@@ -48,12 +47,12 @@ def view_all_bikes():
 # This is a GET route to display the "view all riders" page
 @app.route('/users')
 def view_all_riders():
-    apiroute = '/REST/1.0/stats'
+    apiroute = '/REST/1.0/users/all'
     r = requests.get(apiurl + apiroute)
     if r.status_code == 200:
         data = r.json()
-        print data['USERS']
-        return render_template('users.html', users=data['USERS'])
+        print data['users']
+        return render_template('users.html', users=data['users'])
     else:
         return render_template('500.html')
 
@@ -74,6 +73,7 @@ def home():
 @app.route('/bike/<int:bike_id>')
 def view_bike(bike_id):
     apiroute = '/REST/1.0/bikes/info/' + str(bike_id)
+    print apiurl + apiroute
     r = requests.get(apiurl + apiroute)
     if r.status_code == 200:
         data = r.json()
