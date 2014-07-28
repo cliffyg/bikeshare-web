@@ -19,6 +19,26 @@ debug = False
 # REST API function definitions
 # ================
 
+# Users
+# ========
+
+# Get all users
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/users/all
+# Response: { "users": [{<string:CREDIT_CARD>, <int:MEMBERSHIP_STATUS>,
+#                        <int:USER_ID>, <string:USER_NAME>}, ...] }
+@app.route('/REST/1.0/users/all')
+def all_users():
+    db = sstoreclient.sstoreclient()
+    proc = 'Users'
+    try:
+        data = db.call_proc(proc)
+    except Exception as e:
+        log_procerr(proc,str(e))
+        return '{}', 500
+    return jsonify({"users" : data['data']})
+
 # Logins
 # ========
 
@@ -148,6 +168,23 @@ def stations_info(station_id):
 
 # Bikes
 # ========
+
+# Get all bikes
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/bikes/all
+# Response: { "bikes": [{<int:BIKE_ID>, <int:USER_ID>, <int:CURRENT_STATUS>,
+#                        <int:STATION_ID>}, ...] }
+@app.route('/REST/1.0/bikes/all')
+def all_bikes():
+    db = sstoreclient.sstoreclient()
+    proc = 'Bikes'
+    try:
+        data = db.call_proc(proc)
+    except Exception as e:
+        log_procerr(proc,str(e))
+        return '{}', 500
+    return jsonify({"bikes" : data['data']})
 
 # Get current bike positions
 # ---------
