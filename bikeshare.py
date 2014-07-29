@@ -102,7 +102,13 @@ def view_station(station_id):
 # This is a GET route to display a single user page of a given name
 @app.route('/user/<int:user_id>')
 def view_user(user_id):
-    return render_template('user.html',user_id=user_id)
+    apiroute = '/REST/1.0/users/info/' + str(user_id)
+    r = requests.get(apiurl + apiroute)
+    if r.status_code == 200:
+        data = r.json ()
+        return render_template('user.html', user_id=user_id)
+    else:
+        return render_template('500.html')
 
 @app.route('/javascript/<path:path>', methods=['GET','OPTIONS'])
 def js_proxy(path):

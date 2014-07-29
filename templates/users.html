@@ -31,7 +31,7 @@
         </div>
     </div>
     <div class="widget-body">
-        <table class="table table-striped">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
                     <td>User ID</td>
@@ -42,7 +42,7 @@
             </thead>
             <tbody>
                 {% for user in users: %}                
-                <tr>
+                <tr class="row_link" href="{{ url_for('view_user', user_id=user['USER_ID']) }}">
                     <td>{{ user['USER_ID'] }}</td>
                     <td>{{ user['USER_NAME'] }}</td>
                     <td>{{ user['MEMBERSHIP_STATUS'] }}</td>

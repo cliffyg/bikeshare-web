@@ -38,7 +38,7 @@
         </div>
     </div>
     <div class="widget-body">
-        <table class="table table-striped">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
                     <td>Station ID</td>
@@ -49,7 +49,7 @@
             </thead>
             <tbody>
                 {% for station in stations_list: %}
-                <tr>
+                <tr class="row_link" href="{{ url_for('view_station', station_id=station['STATION_ID']) }}">
                     <td>{{ station['STATION_ID'] }}</td>
                     <td>{{ station['STATION_NAME'] }}</td>
                     <td>{{ station['STREET_ADDRESS'] }}</td>

@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="widget-body">
-        <table class="table table-striped">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
                     <td>Bike ID</td>
@@ -43,7 +43,7 @@
             </thead>
             <tbody>
                 {% for bike in bikes: %}
-                    <tr>
+                    <tr class="row_link" href="{{ url_for('view_bike', bike_id=bike['BIKE_ID']) }}">
                         <td>{{ bike['BIKE_ID'] }}</td>
                         <td>{{ bike['CURRENT_STATUS'] }}</td>
                         <td>{{ bike['STATION_ID'] if (bike['STATION_ID'] >= 0) else 'N/A' }}</td>
