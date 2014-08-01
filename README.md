@@ -15,3 +15,4 @@ Setup
 -----
 
 Set up virtualenv, then pip install -r requirements.txt
+After make sure to uncomment the line in the gitignore so you do not push personal changes to runserver.py
