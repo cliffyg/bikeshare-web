@@ -11,7 +11,7 @@ import sstoreclient
 import requests
 
 app = Flask(__name__)
-
+app.config.setdefault('BOOTSTRAP_SERVE_LOCAL',True)
 bootstrap = Bootstrap(app)
 
 # Set debug mode.
