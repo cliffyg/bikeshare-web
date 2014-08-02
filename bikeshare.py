@@ -1,15 +1,17 @@
 import syslog
 from flask import Flask, request, render_template, send_from_directory
 from flask.ext.bootstrap import Bootstrap
+import json
 import re
-
+import syslog
 from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
+import sstoreclient
 import requests
 
 app = Flask(__name__)
-
+app.config.setdefault('BOOTSTRAP_SERVE_LOCAL',True)
 bootstrap = Bootstrap(app)
 
 # Set debug mode.
@@ -124,7 +126,7 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
     if debug:
-        app.run(host='127.0.0.1', port=8082, debug=True)
+        app.run(host='127.0.0.1', port=8081, debug=True)
     else:
-        app.run(host='0.0.0.0', port=8082, debug=True)
+        app.run(host='0.0.0.0', port=8081, debug=True)
 
