@@ -22,7 +22,7 @@
             </thead>
             <tbody>
                 {% for user in users: %}                
-                <tr class="row_link" href="{{ url_for('view_user', user_id=user['USER_ID']) }}">
+                <tr class="row_link" href="{{ url_for('view_user', user_name=user['USER_NAME']) }}">
                     <td>{{ user['USER_ID'] }}</td>
                     <td>{{ user['USER_NAME'] }}</td>
                     <td>{{ user['MEMBERSHIP_STATUS'] }}</td>

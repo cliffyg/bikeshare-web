@@ -4,6 +4,7 @@ from flask.ext.bootstrap import Bootstrap
 import json
 import re
 import syslog
+import urllib2
 from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
@@ -17,7 +18,7 @@ bootstrap = Bootstrap(app)
 # Set debug mode.
 debug = False
 
-apiurl = 'http://api.bikeshare.cs.pdx.edu'
+apiurl = 'http://api.bikeshare.cs.pdx.edu:8082'
 
 # ================
 # Main app function definitions
@@ -53,7 +54,6 @@ def view_all_riders():
     r = requests.get(apiurl + apiroute)
     if r.status_code == 200:
         data = r.json()
-        print data['users']
         return render_template('users.html', users=data['users'])
     else:
         return render_template('500.html')
@@ -102,13 +102,13 @@ def view_station(station_id):
         return render_template('500.html')
 
 # This is a GET route to display a single user page of a given name
-@app.route('/user/<int:user_id>')
-def view_user(user_id):
-    apiroute = '/REST/1.0/users/info/' + str(user_id)
+@app.route('/user/<user_name>')
+def view_user(user_name):
+    apiroute = '/REST/1.0/users/info/' + user_name
     r = requests.get(apiurl + apiroute)
     if r.status_code == 200:
         data = r.json ()
-        return render_template('user.html', user_id=user_id)
+        return render_template('user.html', user=data)
     else:
         return render_template('500.html')
 

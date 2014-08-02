@@ -2,6 +2,7 @@ import syslog
 from flask import Flask, request, render_template, send_from_directory, jsonify
 from flask.ext.bootstrap import Bootstrap
 import re
+import urllib2
 
 from datetime import timedelta
 from flask import make_response, request, current_app
@@ -42,13 +43,14 @@ def all_users():
 # Get single user
 # ---------
 # Verb:     GET
-# Route:    /REST/1.0/users/info/<int:user_id>
+# Route:    /REST/1.0/users/info/<user_name>
 # Response: {<>, <>, <>}
-@app.route('/REST/1.0/users/info/<int:user_id>')
-def user_info(user_id):
+@app.route('/REST/1.0/users/info/<user_name>')
+def user_info(user_name):
     db = sstoreclient.sstoreclient()
     proc = 'FindUser'
-    args = [user_id]
+    args = [urllib2.unquote(user_name)]
+    print args
     try:
         # Get data from S-Store.
         data = db.call_proc(proc,args)
