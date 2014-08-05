@@ -18,7 +18,7 @@ bootstrap = Bootstrap(app)
 # Set debug mode.
 debug = False
 
-apiurl = 'http://api.bikeshare.cs.pdx.edu:8082'
+apiurl = 'http://api.bikeshare.cs.pdx.edu'
 
 # ================
 # Main app function definitions
