@@ -6,60 +6,30 @@
 <div class="widget">
     <div class="widget-header">
         <div class="row">
-            <div class="col-sm-8">
+            <div>
                 <strong>All Stations</strong>
-            </div>
-            <div class="col-sm-4">
-            <form class="form-inline" role="form">
-                <div class="form-group">
-                    <select class="form-control input-sm">
-                        <option value="">
-                            Station ID
-                        </option>
-                        <option value="">
-                            Address 
-                        </option>
-                        <option value="">
-                            Total Docks (Increasing)
-                        </option>
-                        <option value="">
-                            Total Docks (Decreasing)
-                        </option>
-                        <option value="">
-                            Available Bikes (Increasing)
-                        </option>
-                        <option value="">
-                            Available Bikes (Decreasing)
-                        </option>
-                    </select>
-                </div>
-            </form>
             </div>
         </div>
     </div>
     <div class="widget-body">
-        <table class="table table-striped">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
                     <td>Station ID</td>
+                    <td>Station Name</td>
                     <td>Address</td>
-                    <td>Total docks</td>
-                    <td>Available bikes</td>
+                    <td>Location</td>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td></td>
-                    <td>10</td>
-                    <td>4</td>
+                {% for station in stations_list: %}
+                <tr class="row_link" href="{{ url_for('view_station', station_id=station['STATION_ID']) }}">
+                    <td>{{ station['STATION_ID'] }}</td>
+                    <td>{{ station['STATION_NAME'] }}</td>
+                    <td>{{ station['STREET_ADDRESS'] }}</td>
+                    <td>({{ station['LATITUDE'] }},{{ station['LONGITUDE'] }})</td>
                 </tr>
-                <tr>
-                    <td>2</td>
-                    <td></td>
-                    <td>10</td>
-                    <td>2</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

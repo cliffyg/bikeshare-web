@@ -1,65 +1,34 @@
 {% extends "base.html" %}
 
 {% block title %}All Users{% endblock %}
-
 {% block page_content %}
 <div class="widget">
     <div class="widget-header">
         <div class="row">
-            <div class="col-sm-8">
+            <div>
                 <strong>All Users</strong>
-            </div>
-            <div class="col-sm-4">
-            <form class="form-inline" role="form">
-                <div class="form-group">
-                    <select class="form-control input-sm">
-                        <option value="">
-                            User ID
-                        </option>
-                        <option value="">
-                            Username 
-                        </option>
-                        <option value="">
-                            Credit Card
-                        </option>
-                        <option value="">
-                            Membership Status
-                        </option>
-                        <option value="">
-                            Membership Expires (Increasing)
-                        </option>
-                        <option value="">
-                            Membership Expires (Decreasing)
-                        </option>
-                    </select>
-                </div>
-            </form>
             </div>
         </div>
     </div>
     <div class="widget-body">
-        <table class="table table-striped">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
                     <td>User ID</td>
-                    <td>Username</td>
+                    <td>User Name</td>
                     <td>Membership Status</td>
-                    <td>Membership Expires</td>
+                    <td>Credit Card</td>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Thor</td>
-                    <td></td>
-                    <td></td>
+                {% for user in users: %}                
+                <tr class="row_link" href="{{ url_for('view_user', user_name=user['USER_NAME']) }}">
+                    <td>{{ user['USER_ID'] }}</td>
+                    <td>{{ user['USER_NAME'] }}</td>
+                    <td>{{ user['MEMBERSHIP_STATUS'] }}</td>
+                    <td>{{ user['CREDIT_CARD'] }}</td>
                 </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Bobby</td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

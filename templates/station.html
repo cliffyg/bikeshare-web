@@ -4,7 +4,8 @@
 
 {% block page_content %}
 <h2><p class="text-center">Station ID: {{ station_id }}</p></h2>
-<p class="text-center">Address:</p>
+<p class="text-center">Location: ({{ lat }}, {{ lon }})</p>
+<p class="text-center">Address:{{ addr }}</p>
 <div class="row">
     <div class="col-sm-9">
         <div class="widget">
@@ -23,16 +24,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>7/1/14</td>
-                            <td>12:30pm</td>
-                            <td>1</td>
-                            <td>Checked out</td>
-                        </tr>
-                        <tr>
-                            <td>7/1/14</td>
-                            <td>9:00am</td>
-                            <td>1</td>
-                            <td>Checked in</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
@@ -46,11 +41,10 @@
             </div>
             <div class="widget-body">
                 <table class="table">
-                    <tr><td>Station Id:</td><td></td></tr>
-                    <tr><td># Bikes Available</td><td></td></tr>
-                    <tr><td># Docks Available:</td><td></td></tr>
-                    <tr><td>Current Bike Discount:</td><td></td></tr>
-                    <tr><td>Current Dock Discount:</td><td></td></tr>
+                    <tr><td>Station Name:</td><td>{{ name }}</td></tr>
+                    <tr><td># Bikes Available</td><td>{{ num_bikes }}</td></tr>
+                    <tr><td># Docks Available:</td><td>{{ num_docks }}</td></tr>
+                    <tr><td>Current Dock Discount:</td><td>{{ discount }}</td></tr>
                 </table>
             </div>
         </div>
