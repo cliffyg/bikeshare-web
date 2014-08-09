@@ -9,7 +9,7 @@ var bikeFeature;
 var riderFeatures = {};
 var stationFeatures = {};
 var osmUrl = "http://bikeshare.cs.pdx.edu/osm";
-var iconUrl = "http://bikeshare.cs.pdx.edu/static/ic_launcher32.png";
+var iconUrl = "http://bikeshare.cs.pdx.edu/static/bike_blue.png";
 var apiUrl = "http://api.bikeshare.cs.pdx.edu";
 function init() {
     map = new OpenLayers.Map("mapdiv");
