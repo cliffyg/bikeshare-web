@@ -35,8 +35,8 @@ function init() {
             pointRadius: 5,
             pointerEvents: "visiblePainted",
             label : "${name}",
-            fontColor: "${favColor}",
-            fontSize: "12px",
+            fontColor: "red",
+            fontSize: "14px",
             fontFamily: "Courier New, monospace",
             fontWeight: "bold",
             labelAlign: "${align}",
@@ -55,7 +55,8 @@ function init() {
           style : {
               externalGraphic : iconUrl,
               graphicWidth: 21,
-              graphicHeight: 25
+              graphicHeight: 50,
+              graphicYOffset: 25 
           }
     });
     map.addLayer(bikeLayer);
