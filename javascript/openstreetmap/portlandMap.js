@@ -35,7 +35,7 @@ function init() {
             pointRadius: 5,
             pointerEvents: "visiblePainted",
             label : "${name}",
-            fontColor: "red",
+            fontColor: "black",
             fontSize: "14px",
             fontFamily: "Courier New, monospace",
             fontWeight: "bold",
@@ -231,6 +231,7 @@ function createStationFeature(lon,lat,stationName,bikes,docks,index,stationId) {
         null,
         false
    );
+   pointFeature.attributes.popup.panMapIfOutOfView = false;
    stationFeatures[stationId] = pointFeature;
    stationLayer.addFeatures(stationFeatures[stationId]);
    map.addPopup(pointFeature.attributes.popup);
@@ -240,9 +241,6 @@ function createStationFeature(lon,lat,stationName,bikes,docks,index,stationId) {
 }
 
 function updateBikestationData() {
-    for (var i = 0; i < map.popups.length; i ++) {
-        map.popups[i].destroy();
-    }
     for (var featureId in stationFeatures) {
         $.ajax({url : apiUrl + "/REST/1.0/stations/info/" + featureId,
             success : function(results) {
@@ -270,17 +268,11 @@ function updateStationFeature(stationId,stationData) {
     stationPoint.transform(
          new OpenLayers.Projection("EPSG:4326"),
          new OpenLayers.Projection("EPSG:900913")
-    );  
-    stationFeatures[stationId].attributes.popup = new OpenLayers.Popup.FramedCloud("Popup" + stationId,
-         stationPoint.getBounds().getCenterLonLat(), null,
-         'Station ' + stationFeatures[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS'],
-         null,
-         false
-    );  
-    map.addPopup(stationFeatures[stationId].attributes.popup);
-    for (var i = 0; i < map.popups.length; i ++) {
-        map.popups[i].hide();
-    }
+    );
+
+    popupIndex = getPopupIndex(stationFeatures[stationId].attributes.popup);
+    map.popups[popupIndex].setContentHTML('Station ' + stationFeatures[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS']);
+    pointFeature.attributes.popup.panMapIfOutOfView = false;  
     stationLayer.removeFeatures([stationFeatures[stationId]]);
     stationLayer.addFeatures([stationFeatures[stationId]]);
 }
