@@ -9,15 +9,17 @@
                 <div class="widget-header">
                     <strong>Overview</strong> 
                 </div>
+                <div class="widget-body">
                 <table class="table">
                     <tbody>
-                        <tr><td>Total Bikes</td><td>{{ bikes }}</td></tr>
-                        <tr><td>Total Stations</td><td>{{ stations }}</td></tr>
-                        <tr><td>Total Bikers</td><td>{{ users }}</td></tr>
-                        <tr><td>Bikes in use</td><td>{{ active_bikes }}</td></tr>
-                        <tr><td>Average Bikes/Station</td><td>{{ bikes_per_station }}</td></tr>
+                        <tr><td>Total Bikes</td><td class="stat">{{ bikes }}</td></tr>
+                        <tr><td>Total Stations</td><td class="stat">{{ stations }}</td></tr>
+                        <tr><td>Total Bikers</td><td class="stat">{{ users }}</td></tr>
+                        <tr><td>Bikes in use</td><td class="stat">{{ active_bikes }}</td></tr>
+                        <tr><td>Average Bikes/Station</td><td class="stat">{{ bikes_per_station }}</td></tr>
                     </tbody>
                 </table>
+                </div>
             </div>
             <div class="widget">
                 <div class="widget-header">

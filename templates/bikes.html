@@ -25,7 +25,7 @@
                 {% for bike in bikes: %}
                     <tr class="row_link" href="{{ url_for('view_bike', bike_id=bike['BIKE_ID']) }}">
                         <td>{{ bike['BIKE_ID'] }}</td>
-                        <td>{{ bike['CURRENT_STATUS'] }}</td>
+                        <td>{{ 'Active' if (bike['CURRENT_STATUS'] == 0) else 'Inactive' }}</td>
                         <td>{{ bike['STATION_ID'] if (bike['STATION_ID'] >= 0) else 'N/A' }}</td>
                         <td>{{ bike['USER_ID'] if (bike['USER_ID'] >= 0) else 'N/A' }}</td>
                     </tr>

@@ -9,3 +9,9 @@ $( "#submit-single" ).on( "click", function ( event ) {
 $(".row_link").click(function() {
     window.document.location = $(this).attr("href");
 });
+
+function update_stats() {
+    $.getJSON( "http://bikeshare.cs.pdx.edu:8082/REST/1.0/stats", function( data ) {
+        console.log("hi");        
+    });
+}
