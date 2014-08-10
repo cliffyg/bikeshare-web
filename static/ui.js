@@ -11,7 +11,11 @@ $(".row_link").click(function() {
 });
 
 function update_stats() {
-    $.getJSON( "http://api.bikeshare.cs.pdx.edu/REST/1.0/stats", function( data ) {
-        console.log("hi");        
+    $.getJSON("http://api.bikeshare.cs.pdx.edu/REST/1.0/stats", function(data) {
+        $("#tbikes").html(data['BIKES']);
+        $("#tstations").html(data['STATIONS']);
+        $("#tbikers").html(data['USERS']);
+        $("#abikes").html(data['ACTIVE_BIKES']);
+        $("#avgbikes").html(data['BIKES_PER_STATION']); 
     });
 }

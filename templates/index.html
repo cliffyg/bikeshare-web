@@ -12,11 +12,11 @@
                 <div class="widget-body">
                 <table class="table">
                     <tbody>
-                        <tr><td>Total Bikes</td><td class="stat">{{ bikes }}</td></tr>
-                        <tr><td>Total Stations</td><td class="stat">{{ stations }}</td></tr>
-                        <tr><td>Total Bikers</td><td class="stat">{{ users }}</td></tr>
-                        <tr><td>Bikes in use</td><td class="stat">{{ active_bikes }}</td></tr>
-                        <tr><td>Average Bikes/Station</td><td class="stat">{{ bikes_per_station }}</td></tr>
+                        <tr><td>Total Bikes</td><td id="tbikes">{{ bikes }}</td></tr>
+                        <tr><td>Total Stations</td><td id="tstations">{{ stations }}</td></tr>
+                        <tr><td>Total Bikers</td><td id="tbikers">{{ users }}</td></tr>
+                        <tr><td>Bikes in use</td><td id="abikes">{{ active_bikes }}</td></tr>
+                        <tr><td>Average Bikes/Station</td><td id="avgbikes">{{ bikes_per_station }}</td></tr>
                     </tbody>
                 </table>
                 </div>
@@ -67,5 +67,9 @@
             <div id="mapdiv"></div>
         </div>
     </div>
-
+<script type="text/javascript">
+    window.onload = function() {
+        setInterval(function(){update_stats()}, 1000);
+    };
+</script>
 {% endblock %}
