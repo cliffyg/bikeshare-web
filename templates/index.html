@@ -56,7 +56,7 @@
 
         </div>
         <div class ="col-sm-9">
-            <div class="widget">
+            <div id="anomalies" class="widget">
                 <div class="widget-header">
                     <strong>Anomalies</strong>
                 </div>
@@ -67,9 +67,4 @@
             <div id="mapdiv"></div>
         </div>
     </div>
-<script type="text/javascript">
-    window.onload = function() {
-        setInterval(function(){update_stats()}, 1000);
-    };
-</script>
 {% endblock %}
