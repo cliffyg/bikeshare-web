@@ -112,6 +112,10 @@ def view_user(user_name):
     else:
         return render_template('500.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.route('/javascript/<path:path>', methods=['GET','OPTIONS'])
 def js_proxy(path):
     return send_from_directory(app.root_path + '/javascript/', path)
