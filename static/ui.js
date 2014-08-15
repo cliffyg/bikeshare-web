@@ -24,14 +24,20 @@ function update_stats() {
 
 function check_anomalies() {
     $.getJSON(api_url + "/REST/1.0/anomalies", function(data) {
-        if (!$("anomalies").is(":visible")) {
-            $("anomalies").show();
+        if (!$("#anomalies").is(":visible")) {
+            $("#anomalies").fadeIn("fast");
         }
+        var table = "<table class='table table-striped'>";
         $.each(data['anomalies'], function(i, anomaly) {
-        
+            table += "<tr><td>User ID: " + anomaly['USER_ID'] + "</td>";
+            table += "<td>Status: " + (anomaly['STATUS'] == 1 ? "stolen" : "N/A") + "</td></tr>";
         });
+        table += "</table>";
+        $("#anomalies-table").html(table);
     })
         .fail(function() {
-            $("#anomalies").hide()
+            if ($("#anomalies").is(":visible")) {
+                $("#anomalies").fadeOut("fast");
+            }
         });
 }

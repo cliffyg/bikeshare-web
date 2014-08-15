@@ -34,11 +34,16 @@ div.olControlAttribution { bottom:3px; }
     padding-bottom: 10px;
 }
 
+.navbar-brand {
+    font-size: 20px;
+    padding-top: 12px;
+}
+
 #anomalies {
     display: none;
 }
 
-.navbar-brand {
-    font-size: 20px;
-    padding-top: 12px;
+#anomalies-table {
+    height: 75px;
+    overflow: auto;
 }
