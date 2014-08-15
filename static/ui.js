@@ -24,7 +24,12 @@ function update_stats() {
 
 function check_anomalies() {
     $.getJSON(api_url + "/REST/1.0/anomalies", function(data) {
-    
+        if($("anomalies").is(":visible")) {
+            $("anomalies").show();
+        }
+        $.each(data['anomalies'], function(i, anomaly) {
+            console.log(anomaly);
+        });
     })
         .fail(function() {
             $("#anomalies").hide()
