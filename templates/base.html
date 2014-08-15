@@ -25,12 +25,15 @@ type="image/x-icon">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">BikeSharePDX
+            <a class="navbar-brand" href="/">
+                BikeSharePDX
                 <img src="{{url_for('static', filename='ic_launcher32.png')}}" alt="">
             </a>
-            <a href="/about" class="navbar-brand">About</a>
         </div>
         <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/about">About</a></li>
+            </ul>
         </div>
     </div>
 </div>
@@ -38,16 +41,7 @@ type="image/x-icon">
 
 {% block scripts %}
 <script src="http://bikeshare.cs.pdx.edu/javascript/jquery/jquery-1.11.1.min.js"></script>
-<script src="http://bikeshare.cs.pdx.edu/javascript/openlayers/OpenLayers.js"></script>
-<script src="http://bikeshare.cs.pdx.edu/javascript/openstreetmap/OpenStreetMap.js"></script>
-<script src="http://bikeshare.cs.pdx.edu/javascript/openstreetmap/portlandMap.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='ui.js') }}"></script>
-<script> window.onload = function() {
-        init();
-        setInterval(function(){update_stats()}, 1000);
-        setInterval(function(){check_anomalies()}, 1000);
-};
-</script>
 {% endblock %}
 {% block content %}
 <div class="container-fluid">

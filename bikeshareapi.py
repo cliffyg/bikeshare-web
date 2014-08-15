@@ -410,7 +410,7 @@ def send_bike_position():
 @app.route('/REST/1.0/anomalies')
 def get_anomalies():
     db = sstoreclient.sstoreclient()
-    proc = 'Anomalies'
+    proc = 'GetAnomalies'
     try:
         data = db.call_proc(proc)
     except Exception as e:

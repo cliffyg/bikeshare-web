@@ -68,3 +68,16 @@
         </div>
     </div>
 {% endblock %}
+{% block scripts %}
+<script src="http://bikeshare.cs.pdx.edu/javascript/jquery/jquery-1.11.1.min.js"></script>
+<script src="http://bikeshare.cs.pdx.edu/javascript/openlayers/OpenLayers.js"></script>
+<script src="http://bikeshare.cs.pdx.edu/javascript/openstreetmap/OpenStreetMap.js"></script>
+<script src="http://bikeshare.cs.pdx.edu/javascript/openstreetmap/portlandMap.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='ui.js') }}"></script>
+<script> window.onload = function() {
+    init();
+    setInterval(function(){update_stats()}, 1000);
+    setInterval(function(){check_anomalies()}, 1000);
+};
+</script>
+{% endblock %}
