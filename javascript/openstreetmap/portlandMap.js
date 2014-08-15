@@ -2,6 +2,7 @@ var pointFeature;
 var map;
 var stationLayer;
 var bikeLayer;
+var decisionLayer;
 var featuresToStationIds = []
 var features = []
 var routePoint = 0;
@@ -11,6 +12,12 @@ var stationFeatures = {};
 var osmUrl = "http://bikeshare.cs.pdx.edu/osm";
 var iconUrl = "http://bikeshare.cs.pdx.edu/static/ic_launcher32.png";
 var apiUrl = "http://api.bikeshare.cs.pdx.edu";
+var decisionLatLong = [
+    [-122.677116394043,45.514647367543],
+    [-122.645616531372,45.5166922220549],
+    [-122.68123626709,45.5266748564834],
+    [-122.661924362183,45.519639087554]
+];
 function init() {
     map = new OpenLayers.Map("mapdiv");
     //switch between local and remote tiles
@@ -49,6 +56,39 @@ function init() {
         stationLayer.redraw();
     });
     map.addLayer(stationLayer);
+
+    decisionLayer = new OpenLayers.Layer.Vector("decisionPoints", {
+        styleMap: new OpenLayers.StyleMap({'default':{
+            strokeColor: "black",
+            strokeOpacity: 1,
+            strokeWidth: 3,
+            fillColor: "black",
+            fillOpacity: 1,
+            pointRadius: 3,
+            pointerEvents: "visiblePainted",
+            fontColor: "black",
+            fontSize: "14px",
+        }}),
+        renderers: renderer
+    });
+   for (var i = 0; i < decisionLatLong.length; i ++) {
+        console.log(decisionLatLong[i]);
+        var decisionPoint = new OpenLayers.Geometry.Point(decisionLatLong[i][0],decisionLatLong[i][1]);
+        decisionPoint.transform(
+             new OpenLayers.Projection("EPSG:4326"),
+             new OpenLayers.Projection("EPSG:900913")
+        );
+        decisionPointFeature = new OpenLayers.Feature.Vector(decisionPoint);
+        decisionPointFeature.attributes = {
+            favColor : 'black',
+            align : 'cm',
+            xOffset : 10,
+            yOffset : 10,
+            pointColor : 'black'
+        };
+        decisionLayer.addFeatures([decisionPointFeature]);
+    }
+    map.addLayer(decisionLayer);
     var zoom = 13;
       map.setCenter(lonlat, zoom); 
       bikeLayer = new OpenLayers.Layer.Vector("bikeLayer", {
@@ -123,9 +163,9 @@ function getBikestationData() {
 
 function setStationColor(stationNum,stationData) {
     bikePercent = (stationData.num_bikes / stationData.num_docks) * 100;
-    if (bikePercent >= 70) {
+    if (bikePercent >= 50) {
         features[stationNum].attributes.pointColor = 'blue';
-    } else if (70 > bikePercent >= 40) {
+    } else if (50 > bikePercent >= 25) {
         features[stationNum].attributes.pointColor = 'yellow';
     } else {
         features[stationNum].attributes.pointColor = 'red';
@@ -199,9 +239,9 @@ function createBikeshareStationFeatures() {
 function createStationFeature(lon,lat,stationName,bikes,docks,index,stationId) {
    var bikePercent = (bikes/docks) * 100;
    var pointColor;
-   if (bikePercent > 70) {
+   if (bikePercent > 50) {
         pointColor = 'blue';
-   } else if (70 > bikePercent >= 40) {
+   } else if (50 > bikePercent >= 25) {
         pointColor = 'yellow';
    } else {
         pointColor = 'red';
@@ -255,9 +295,9 @@ function updateBikestationData() {
 function updateStationFeature(stationId,stationData) {
     var bikePercent = (stationData.CURRENT_BIKES/stationData.CURRENT_DOCKS) * 100;
     var pointColor;
-    if (bikePercent > 70) {
+    if (bikePercent > 50) {
         pointColor = 'blue';
-    } else if ( 70 > bikePercent >= 40) {
+    } else if ( 50 > bikePercent >= 25) {
         pointColor = 'yellow';
     } else {
         pointColor = 'red';
@@ -270,7 +310,11 @@ function updateStationFeature(stationId,stationData) {
     );
 
     popupIndex = getPopupIndex(stationFeatures[stationId].attributes.popup);
-    map.popups[popupIndex].setContentHTML('Station ' + stationFeatures[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS']);
+    if (stationData['CURRENT_DISCOUNT'] > 0 ) {
+        map.popups[popupIndex].setContentHTML('Station ' + stationFeatures[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS'] + '</br>Discount ' + stationData['CURRENT_DISCOUNT']);
+    } else {
+        map.popups[popupIndex].setContentHTML('Station ' + stationFeatures[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS']);
+    }
     pointFeature.attributes.popup.panMapIfOutOfView = false;  
     stationLayer.removeFeatures([stationFeatures[stationId]]);
     stationLayer.addFeatures([stationFeatures[stationId]]);
@@ -286,5 +330,5 @@ function getPopupIndex(popup) {
     }
     return popupIdx;
 }
-setInterval(function(){updateBikestationData()},15000);
+setInterval(function(){updateBikestationData()},1000);
 setInterval(function(){getRiderData()},1000);
