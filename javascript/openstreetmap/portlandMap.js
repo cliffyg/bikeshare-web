@@ -72,7 +72,6 @@ function init() {
         renderers: renderer
     });
    for (var i = 0; i < decisionLatLong.length; i ++) {
-        console.log(decisionLatLong[i]);
         var decisionPoint = new OpenLayers.Geometry.Point(decisionLatLong[i][0],decisionLatLong[i][1]);
         decisionPoint.transform(
              new OpenLayers.Projection("EPSG:4326"),
