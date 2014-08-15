@@ -33,3 +33,7 @@ div.olControlAttribution { bottom:3px; }
     padding-top: 10px;
     padding-bottom: 10px;
 }
+
+#anomalies {
+    display: none;
+}
