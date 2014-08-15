@@ -37,3 +37,8 @@ div.olControlAttribution { bottom:3px; }
 #anomalies {
     display: none;
 }
+
+.navbar-brand {
+    font-size: 20px;
+    padding-top: 12px;
+}
