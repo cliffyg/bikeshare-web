@@ -44,6 +44,6 @@ div.olControlAttribution { bottom:3px; }
 }
 
 #anomalies-table {
-    height: 100px;
+    height: 75px;
     overflow: auto;
 }
