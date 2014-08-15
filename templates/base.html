@@ -43,6 +43,8 @@ type="image/x-icon">
 <script type="text/javascript" src="{{ url_for('static', filename='ui.js') }}"></script>
 <script> window.onload = function() {
         init();
+        setInterval(function(){update_stats()}, 1000);
+        setInterval(function(){check_anomalies()}, 1000);
 };
 </script>
 {% endblock %}

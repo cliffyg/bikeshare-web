@@ -399,6 +399,24 @@ def send_bike_position():
     # Success case
     else:
         return jsonify(data['data'])
+# Anomaly function
+# ========
+
+# Get anomalies
+# --------
+# Verb:     GET
+# Route:    /REST/1.0/anomalies
+# Response {anomalies: [{<int:USER_ID>, <int:STATUS>}, ...]}
+@app.route('/REST/1.0/anomalies')
+def get_anomalies():
+    db = sstoreclient.sstoreclient()
+    proc = 'Anomalies'
+    try:
+        data = db.call_proc(proc)
+    except Exception as e:
+        log_procerr(proc,str(e))
+        return '{}', 500
+    return jsonify({"anomalies" : data['data']})
 
 # Other API functions
 # ========

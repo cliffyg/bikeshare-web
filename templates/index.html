@@ -9,15 +9,17 @@
                 <div class="widget-header">
                     <strong>Overview</strong> 
                 </div>
+                <div class="widget-body">
                 <table class="table">
                     <tbody>
-                        <tr><td>Total Bikes</td><td>{{ bikes }}</td></tr>
-                        <tr><td>Total Stations</td><td>{{ stations }}</td></tr>
-                        <tr><td>Total Bikers</td><td>{{ users }}</td></tr>
-                        <tr><td>Bikes in use</td><td>{{ active_bikes }}</td></tr>
-                        <tr><td>Average Bikes/Station</td><td>{{ bikes_per_station }}</td></tr>
+                        <tr><td>Total Bikes</td><td id="tbikes">{{ bikes }}</td></tr>
+                        <tr><td>Total Stations</td><td id="tstations">{{ stations }}</td></tr>
+                        <tr><td>Total Bikers</td><td id="tbikers">{{ users }}</td></tr>
+                        <tr><td>Bikes in use</td><td id="abikes">{{ active_bikes }}</td></tr>
+                        <tr><td>Average Bikes/Station</td><td id="avgbikes">{{ bikes_per_station }}</td></tr>
                     </tbody>
                 </table>
+                </div>
             </div>
             <div class="widget">
                 <div class="widget-header">
@@ -54,7 +56,7 @@
 
         </div>
         <div class ="col-sm-9">
-            <div class="widget">
+            <div id="anomalies" class="widget">
                 <div class="widget-header">
                     <strong>Anomalies</strong>
                 </div>
@@ -65,5 +67,4 @@
             <div id="mapdiv"></div>
         </div>
     </div>
-
 {% endblock %}
