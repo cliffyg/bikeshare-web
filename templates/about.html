@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}About BikeSharePDX{% endblock %}
+
+{% block page_content %}
+<div>
+  <h2>The BikeShare Project</h2>
+  <p>
+    The BikeShare project is a class project for Portland State University's
+    Spring-Summer 2014 Computer Science Capstone class. The purpose of the
+    project is to demonstrate the streaming and transactional capabilities of
+    the <a href="http://www.cs.cmu.edu/~pavlo/static/papers/sstore_vldb14.pdf">
+    S-Store NewSQL Database</a> developed by Brown, Intel, MIT, PSU, and CMU.
+  </p>
+  <p>
+    To demonstrate the database, we created an application for an imagined
+    company called BikeShare that uses the database as a backend. The
+    project consists of two components: a website that acts as a birds' eye
+    view of the BikeShare system for BikeShare administrators, and an Android
+    application for BikeShare users. The system works by gathering location
+    data from simulated users in the S-Store database.
+  </p>
+  <p>
+    BikeShare is modeled after ZipCar in Portland or CitiBike in New York. Users
+    pay a fee to check out bikes from designated stations, ride the bike around
+    the city, and check the bike in to a station. Users are offered discounts
+    for checking a bike into a station that is particularly low on bikes, so
+    that the need for BikeShare employees to redistribute the bikes is
+    decreased.
+  </p>
+  <p>
+    This is the first application to be written on top of the S-Store database.
+    Prior to this project, the database had no client that could accessed over a
+    network. In addition to writing the web and Android front-ends, we created
+    an interface between the S-Store database and a REST API.
+  </p>
+  <p>
+    The code for the BikeShare website, the Android application, and the fork of
+    S-Store containing our client, can be found at
+    <a href="http://github.com/bikeshare">our github organization</a>.
+  </p>
+  <h3>The Team</h3>
+  <ul>
+    <li>Chris Giossi</li>
+    <li>Jonathan Hong</li>
+    <li>Sara Kane</li>
+    <li>Craig Meinschein</li>
+    <li>Colleen Murphy</li>
+    <li>David Ramage</li>
+    <li>Clayton Ward</li>
+  </ul>
+</div>
+{% endblock %}
