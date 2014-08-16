@@ -30,7 +30,7 @@ function check_anomalies() {
         var table = "<table class='table table-striped'>";
         $.each(data['anomalies'], function(i, anomaly) {
             table += "<tr><td>User ID: " + anomaly['USER_ID'] + "</td>";
-            table += "<td>Status: " + (anomaly['STATUS'] == 1 ? "stolen" : "N/A") + "</td></tr>";
+            table += "<td>Status: " + (anomaly['STATUS'] == 1 ? "Suspicious" : "Suspicious") + "</td></tr>";
         });
         table += "</table>";
         $("#anomalies-table").html(table);
