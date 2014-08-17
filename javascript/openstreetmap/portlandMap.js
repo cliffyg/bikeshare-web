@@ -310,7 +310,7 @@ function updateStationFeature(stationId,stationData) {
 
     popupIndex = getPopupIndex(stationFeatures[stationId].attributes.popup);
     if (stationData['CURRENT_DISCOUNT'] > 0 ) {
-        map.popups[popupIndex].setContentHTML('Station ' + stationFeatures[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS'] + '</br>Discount ' + stationData['CURRENT_DISCOUNT']);
+        map.popups[popupIndex].setContentHTML('Station ' + stationFeatures[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS'] + '</br>Discounts ' + stationData['CURRENT_DISCOUNT']);
     } else {
         map.popups[popupIndex].setContentHTML('Station ' + stationFeatures[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS']);
     }
