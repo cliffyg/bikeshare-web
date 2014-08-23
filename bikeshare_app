@@ -155,16 +155,6 @@ ModTileThrottlingRenders 128 0.2
         Allow from 127.0.0.0/255.0.0.0 ::1/128
     </Directory>
 
-    WSGIDaemonProcess bikeshare_dramage user=dramage group=dramage threads=5
-    WSGIScriptAlias /bikeshare_dramage /home/dramage/bikeshare-web/apache.wsgi
-	<Directory /home/dramage/bikeshare-web>
-        WSGIScriptReloading On
-		WSGIProcessGroup bikeshare_dramage
-		WSGIApplicationGroup %{GLOBAL}
-		Order deny,allow
-		Allow from all
-	</Directory>
-
     WSGIDaemonProcess bikeshare_root user=www-data group=www-data threads=5
     WSGIScriptAlias / /var/www/bikeshare-web/apache.wsgi
 	<Directory /var/www/bikeshare-web>
