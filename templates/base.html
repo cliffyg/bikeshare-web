@@ -16,23 +16,26 @@ type="image/x-icon">
 <div class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button"class="navbar-toggle"data-toggle="collapse"
-                data-target=".navbar-collapse">
-                <span class="sr-only">
-                    Toggle navigation
-                </span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
             <a class="navbar-brand" href="/">
                 BikeSharePDX
                 <img src="{{url_for('static', filename='ic_launcher32.png')}}" alt="">
             </a>
+        <button type="button"class="navbar-toggle"data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">
+                Toggle navigation
+            </span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="/about">About</a></li>
+            </ul>
+            <ul class="nav navbar-nav pull-right">
+                <li><img class="navbar-logo" title="Portland State University" src="http://www.pdx.edu/sites/all/themes/pdx_primary/logo.png" alt="PSU Logo" width="174" height="36" /></li>
+                <li><img class="navbar-logo" title="ISTC Big Data" src="{{ url_for('static', filename='istcbd-logo.png') }}" alt="ISTC-BD Logo" height="36" /></li>
             </ul>
         </div>
     </div>

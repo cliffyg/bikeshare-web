@@ -47,3 +47,8 @@ div.olControlAttribution { bottom:3px; }
     height: 75px;
     overflow: auto;
 }
+
+.navbar-logo {
+    margin-top: 6px;
+    margin-left: 5px;
+}
