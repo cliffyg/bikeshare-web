@@ -51,23 +51,30 @@
                 </div>
             </div>
         </div>
-        <div class ="col-sm-9">
-            <div class="widget">
-                <div class="widget-header"><strong>Map</strong></div>
+        <div class="col-sm-9">
+            <div class="widgetP">
+                <div class="widget-header"><strong>Portland</strong></div>
                 <div class="widget-body">
                     <div id="mapdiv"></div>
+                </div>
+            </div>
+            <div class="widgetC">
+                <div class="widget-header"><strong>Cambridge</strong></div>
+                <div class="widget-body">
                     <div id="mapdiv1"></div>
                 </div>
             </div>
-            <div id="anomalies" class="widget">
-                <div class="widget-header">
-                    <strong>Anomalies</strong>
-                </div>
-                <div class="widget-body">
-                    <div id="anomalies-table">
-                    </div>   
-                </div>
-            </div>
+        </div>
+        <div class="col-sm-9">
+           <div id="anomalies" class="widget">
+               <div class="widget-header">
+                   <strong>Anomalies</strong>
+               </div>
+               <div class="widget-body">
+                   <div id="anomalies-table">
+                   </div>   
+               </div>
+           </div>
         </div>
     </div>
 {% endblock %}
@@ -76,10 +83,11 @@
 <script src="http://localhost/javascript/openlayers/OpenLayers.js"></script>
 <script src="http://localhost/javascript/openstreetmap/OpenStreetMap.js"></script>
 <script src="http://localhost/javascript/openstreetmap/portlandMap.js"></script>
+<script src="http://localhost/javascript/openstreetmap/secondmap.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='ui.js') }}"></script>
 <script> window.onload = function() {
     init();
-    initone();
+    second.init();
     setInterval(function(){update_stats()}, 1000);
     setInterval(function(){check_anomalies()}, 1000);
 };

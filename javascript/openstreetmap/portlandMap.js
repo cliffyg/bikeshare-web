@@ -114,6 +114,7 @@ function init() {
     createRiderFeatures();
 }
 
+/*
 var stationLayer1;
 var bikeLayer1;
 var decisionLayer1;
@@ -218,22 +219,23 @@ function initone() {
     createBikeshareStationFeatures1();
     createRiderFeatures1();
 }
+*/
 
 function createBikeFeatures() {
     var bikePoint = new OpenLayers.Geometry.Point(route[0][0],route[0][1]);
-    var bikePoint1 = new OpenLayers.Geometry.Point(route[0][0],route[0][1]);
+    //var bikePoint1 = new OpenLayers.Geometry.Point(route[0][0],route[0][1]);
     bikePoint.transform(
         new OpenLayers.Projection("EPSG:4326"),
         new OpenLayers.Projection("EPSG:900913")
     );
-    bikePoint1.transform(
+    /*bikePoint1.transform(
         new OpenLayers.Projection("EPSG:4326"),
         new OpenLayers.Projection("EPSG:900913")
-    );
+    );*/
     bikeFeature = new OpenLayers.Feature.Vector(bikePoint);
-    bikeFeature1 = new OpenLayers.Feature.Vector(bikePoint1);
+    //bikeFeature1 = new OpenLayers.Feature.Vector(bikePoint1);
     bikeLayer.addFeatures([bikeFeature]);
-    bikeLayer1.addFeatures([bikeFeature1]);
+    //bikeLayer1.addFeatures([bikeFeature1]);
 }
 
 function createRiderFeatures() {
@@ -244,6 +246,7 @@ function createRiderFeatures() {
     });
 }
 
+/*
 function createRiderFeatures1() {
     $.ajax({url :  apiUrl + "/REST/1.0/bikes/active",
         success : function(result) {
@@ -251,26 +254,27 @@ function createRiderFeatures1() {
         }
     });
 }
+*/
 
 function createRiderPoints(rider_locations) {
     for (var i = 0; i < rider_locations.length; i ++ ) {
         var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
-        var bikePoint1 = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
+        //var bikePoint1 = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
         bikePoint.transform(
             new OpenLayers.Projection("EPSG:4326"),
             new OpenLayers.Projection("EPSG:900913")
         );
-        bikePoint1.transform(
+        /*bikePoint1.transform(
             new OpenLayers.Projection("EPSG:4326"),
             new OpenLayers.Projection("EPSG:900913")
-        );
+        );*/
         riderFeatures[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint);
-        riderFeatures1[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint1);
+        //riderFeatures1[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint1);
         bikeLayer.addFeatures([riderFeatures[rider_locations[i]['USER_ID']]]);
-        bikeLayer1.addFeatures([riderFeatures1[rider_locations[i]['USER_ID']]]);
+        //bikeLayer1.addFeatures([riderFeatures1[rider_locations[i]['USER_ID']]]);
     }
     bikeLayer.redraw();
-    bikeLayer1.redraw();
+    //bikeLayer1.redraw();
 }
 function getBikestationData() {
     for (var i = 0; i < featuresToStationIds.length; i ++) {
@@ -284,7 +288,7 @@ function getBikestationData() {
             stationFeatureId : i
        });
     }
-    for (var i = 0; i < featuresToStationIds1.length; i ++) {
+    /*for (var i = 0; i < featuresToStationIds1.length; i ++) {
        $.ajax({ url : apiUrl + "/REST/1.0/stations/info/" + featuresToStationIds1[i],
             crossDomain : true,
             success : function(result) {
@@ -294,22 +298,22 @@ function getBikestationData() {
             },
             stationFeatureId : i
        });
-    }
+    }*/
     stationLayer.redraw();
-    stationLayer1.redraw();
+    //stationLayer1.redraw();
 }
 
 function setStationColor(stationNum,stationData) {
     bikePercent = (stationData.num_bikes / stationData.num_docks) * 100;
     if (bikePercent >= 50) {
         features[stationNum].attributes.pointColor = 'blue';
-        features1[stationNum].attributes.pointColor = 'blue';
+        //features1[stationNum].attributes.pointColor = 'blue';
     } else if (50 > bikePercent >= 25) {
         features[stationNum].attributes.pointColor = 'yellow';
-        features1[stationNum].attributes.pointColor = 'yellow';
+        //features1[stationNum].attributes.pointColor = 'yellow';
     } else {
         features[stationNum].attributes.pointColor = 'red';
-        features1[stationNum].attributes.pointColor = 'red';
+        //features1[stationNum].attributes.pointColor = 'red';
     }
 }
 function getRandomInt (min, max) {
@@ -328,33 +332,33 @@ function getRiderData() {
 
 function updateRiderPoints(rider_locations) {
     bikeLayer.removeFeatures(bikeLayer.features);
-    bikeLayer1.removeFeatures(bikeLayer1.features);
+    //bikeLayer1.removeFeatures(bikeLayer1.features);
     for (var i = 0; i < rider_locations.length; i ++ ) {
         var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
-        var bikePoint1 = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
+        //var bikePoint1 = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
         bikePoint.transform(
             new OpenLayers.Projection("EPSG:4326"),
             new OpenLayers.Projection("EPSG:900913")
         );
-        bikePoint1.transform(
+        /*bikePoint1.transform(
             new OpenLayers.Projection("EPSG:4326"),
             new OpenLayers.Projection("EPSG:900913")
-        );
+        );*/
         if (rider_locations[i]['USER_ID'] in riderFeatures) {
             riderFeatures[rider_locations[i]['USER_ID']].geometry = bikePoint;
         } else {
             riderFeatures[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint);
         }
-        if (rider_locations[i]['USER_ID'] in riderFeatures1) {
+        /*if (rider_locations[i]['USER_ID'] in riderFeatures1) {
             riderFeatures1[rider_locations[i]['USER_ID']].geometry = bikePoint1;
         } else {
             riderFeatures1[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint1);
-        }
+        }*/
         bikeLayer.addFeatures([riderFeatures[rider_locations[i]['USER_ID']]]);
-        bikeLayer1.addFeatures([riderFeatures1[rider_locations[i]['USER_ID']]]);
+        //bikeLayer1.addFeatures([riderFeatures1[rider_locations[i]['USER_ID']]]);
     }
     bikeLayer.redraw();
-    bikeLayer1.redraw();
+    //bikeLayer1.redraw();
 }
 
 
@@ -363,20 +367,24 @@ function featureHighlighted(feature) {
     map.popups[popupIndex].show();
 }
 
+/*
 function featureHighlighted1(feature) {
     var popupIndex1 = getPopupIndex(feature.feature.attributes.popup);
     map1.popups[popupIndex1].show();
 }
+*/
 
 function featureUnhighlighted(feature) {
     var popupIndex = getPopupIndex(feature.feature.attributes.popup);
     map.popups[popupIndex].hide(); 
 }
 
+/*
 function featureUnhighlighted1(feature) {
     var popupIndex1 = getPopupIndex(feature.feature.attributes.popup);
     map1.popups[popupIndex1].hide(); 
 }
+*/
 
 function createBikeshareStationFeatures() {
     $.ajax({url : apiUrl + "/REST/1.0/stations/all",
@@ -401,6 +409,7 @@ function createBikeshareStationFeatures() {
    });
 }
 
+/*
 function createBikeshareStationFeatures1() {
     $.ajax({url : apiUrl + "/REST/1.0/stations/all",
     crossDomain : true,
@@ -423,6 +432,7 @@ function createBikeshareStationFeatures1() {
      }
    });
 }
+*/
 
 function createStationFeature(lon,lat,stationName,bikes,docks,index,stationId) {
    var bikePercent = (bikes/docks) * 100;
@@ -473,6 +483,7 @@ function createStationFeature(lon,lat,stationName,bikes,docks,index,stationId) {
    }*/
 }
 
+/*
 function createStationFeature1(lon,lat,stationName,bikes,docks,index,stationId) {
    var bikePercent = (bikes/docks) * 100;
    var pointColor;
@@ -515,12 +526,14 @@ function createStationFeature1(lon,lat,stationName,bikes,docks,index,stationId) 
    /*map.addPopup(pointFeature.attributes.popup);
    for (var j = 0; j < map.popups.length; j ++) {
         map.popups[j].hide();
-   }*/
+   }
    map1.addPopup(pointFeature.attributes.popup);
    for (var j = 0; j < map1.popups.length; j ++) {
         map1.popups[j].hide();
    }
 }
+*/
+
 
 function updateBikestationData() {
     for (var featureId in stationFeatures) {
@@ -545,8 +558,9 @@ function updateBikestationData() {
     //stationLayer1.redraw();
 }
 
+/*
 function updateBikestationData1() {
-    /*for (var featureId in stationFeatures) {
+    for (var featureId in stationFeatures) {
         $.ajax({url : apiUrl + "/REST/1.0/stations/info/" + featureId,
             success : function(results) {
                  stationData = results;
@@ -554,7 +568,7 @@ function updateBikestationData1() {
                 },
                 featureId : featureId
             });
-    }*/
+    }
     for (var featureId in stationFeatures1) {
         $.ajax({url : apiUrl + "/REST/1.0/stations/info/" + featureId,
             success : function(results) {
@@ -567,6 +581,7 @@ function updateBikestationData1() {
     //stationLayer.redraw();
     stationLayer1.redraw();
 }
+*/
 
 function updateStationFeature(stationId,stationData) {
     var bikePercent = (stationData.CURRENT_BIKES/stationData.CURRENT_DOCKS) * 100;
@@ -579,28 +594,28 @@ function updateStationFeature(stationId,stationData) {
         pointColor = 'red';
     }
     stationFeatures[stationId].attributes.pointColor = pointColor;
-    stationFeatures1[stationId].attributes.pointColor = pointColor;
+    //stationFeatures1[stationId].attributes.pointColor = pointColor;
     var stationPoint = new OpenLayers.Geometry.Point(stationFeatures[stationId].attributes.lon,stationFeatures[stationId].attributes.lat);
-    var stationPoint1 = new OpenLayers.Geometry.Point(stationFeatures1[stationId].attributes.lon,stationFeatures1[stationId].attributes.lat);
+    //var stationPoint1 = new OpenLayers.Geometry.Point(stationFeatures1[stationId].attributes.lon,stationFeatures1[stationId].attributes.lat);
     stationPoint.transform(
          new OpenLayers.Projection("EPSG:4326"),
          new OpenLayers.Projection("EPSG:900913")
     );
 
     popupIndex = getPopupIndex(stationFeatures[stationId].attributes.popup);
-    popupIndex = getPopupIndex(stationFeatures1[stationId].attributes.popup);
+    //popupIndex = getPopupIndex(stationFeatures1[stationId].attributes.popup);
     if (stationData['CURRENT_DISCOUNT'] > 0 ) {
         map.popups[popupIndex].setContentHTML('Station ' + stationFeatures[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS'] + '</br>Discounts ' + stationData['CURRENT_DISCOUNT']);
-        map1.popups[popupIndex].setContentHTML('Station ' + stationFeatures1[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS'] + '</br>Discounts ' + stationData['CURRENT_DISCOUNT']);
+        //map1.popups[popupIndex].setContentHTML('Station ' + stationFeatures1[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS'] + '</br>Discounts ' + stationData['CURRENT_DISCOUNT']);
     } else {
         map.popups[popupIndex].setContentHTML('Station ' + stationFeatures[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS']);
-        map1.popups[popupIndex].setContentHTML('Station ' + stationFeatures1[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS']);
+        //map1.popups[popupIndex].setContentHTML('Station ' + stationFeatures1[stationId].attributes.name + '</br>Bikes ' + stationData['CURRENT_BIKES'] + '</br>Docks ' + stationData['CURRENT_DOCKS']);
     }
     pointFeature.attributes.popup.panMapIfOutOfView = false;  
     stationLayer.removeFeatures([stationFeatures[stationId]]);
     stationLayer.addFeatures([stationFeatures[stationId]]);
-    stationLayer1.removeFeatures([stationFeatures1[stationId]]);
-    stationLayer1.addFeatures([stationFeatures1[stationId]]);
+    //stationLayer1.removeFeatures([stationFeatures1[stationId]]);
+    //stationLayer1.addFeatures([stationFeatures1[stationId]]);
 }
 
 
@@ -611,13 +626,13 @@ function getPopupIndex(popup) {
             popupIdx = i;
         }
     }
-    for (var i = 0; i < map1.popups.length; i ++) {
+    /*for (var i = 0; i < map1.popups.length; i ++) {
         if (popup.id == map1.popups[i].id) {
             popupIdx = i;
         }
-    }
+    }*/
     return popupIdx;
 }
 setInterval(function(){updateBikestationData()},1000);
-setInterval(function(){updateBikestationData1()},1000);
+//setInterval(function(){updateBikestationData1()},1000);
 setInterval(function(){getRiderData()},1000);

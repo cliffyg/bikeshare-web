@@ -4,6 +4,22 @@
     margin: 5px;
 }
 
+.widgetP {
+    border: 1px black solid;
+    border-radius: 1em;
+    margin: 5px;
+    width: 49%;
+    float: left;
+}
+
+.widgetC {
+    border: 1px black solid;
+    border-radius: 1em;
+    margin: 5px;
+    width: 49%;
+    float: right;
+}
+
 .widget-header {
     border-radius: 1em 1em 0 0;
     background-color: #222;
@@ -14,15 +30,14 @@
 }
 
 .widget-body {
-    overflow: hidden;
     border-radius: 0 0 1em 1em;
     padding: 10px;
 }
 
-#mapdiv { width:49%; height:550px; float:left }
+#mapdiv { width:100%; height:550px; }
 div.olControlAttribution { bottom:3px; }
 
-#mapdiv1 { width:49%; height:550px; float:right }
+#mapdiv1 { width:100%; height:550px; }
 div.olControlAttribution { bottom:3px; }
 
 .popup {
