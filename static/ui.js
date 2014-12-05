@@ -15,9 +15,15 @@ $(".row_link").click(function() {
 function update_stats() {
     $.getJSON(api_url + "/REST/1.0/stats", function(data) {
         $("#tbikes").html(data['BIKES']);
+        $("#ptbikes").html(data['BIKES']);
+        $("#ctbikes").html('0');
         $("#tstations").html(data['STATIONS']);
         $("#tbikers").html(data['USERS']);
+        $("#ptbikers").html(data['USERS']);
+        $("#ctbikers").html('0');
         $("#abikes").html(data['ACTIVE_BIKES']);
+        $("#pabikes").html(data['ACTIVE_BIKES']);
+        $("#cabikes").html('0');
         $("#avgbikes").html(data['BIKES_PER_STATION']); 
     });
 }

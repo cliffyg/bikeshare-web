@@ -165,6 +165,42 @@ def all_stations():
 def all_stations_in_rad(lat, lon, rad):
     return all_stations()
 
+# Get Portland stations
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/stations/PDX
+# Response: { "PDX_stations": [{<int:STATION_ID>, <string:STATION_NAME>,
+#                               <int:LATITUDE>, <int:LONGITUDE>,
+#                               <string:STREET_ADDRESS>}, ...] }
+@app.route('/REST/1.0/stations/PDX')
+def PDX_stations():
+    db = sstoreclient.sstoreclient()
+    proc = 'PDXStations'
+    try:
+        data = db.call_proc(proc)
+    except Exception as e:
+        log_procerr(proc,str(e))
+        return '{}', 500
+    return jsonify({"pdxstations" : data['data']})
+
+# Get Portland stations
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/stations/PDX
+# Response: { "PDX_stations": [{<int:STATION_ID>, <string:STATION_NAME>,
+#                               <int:LATITUDE>, <int:LONGITUDE>,
+#                               <string:STREET_ADDRESS>}, ...] }
+@app.route('/REST/1.0/stations/MIT')
+def MIT_stations():
+    db = sstoreclient.sstoreclient()
+    proc = 'MITStations'
+    try:
+        data = db.call_proc(proc)
+    except Exception as e:
+        log_procerr(proc,str(e))
+        return '{}', 500
+    return jsonify({"mitstations" : data['data']})       
+
 # Get individual station info
 # ---------
 # Verb:     GET

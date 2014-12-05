@@ -20,8 +20,6 @@ var decisionLatLong = [
     [-122.68123626709,45.5266748564834],
     [-122.661924362183,45.519639087554]
 ];
-//42.381973, -71.119562
-//42.340622, -71.056390
 
 function createBikeFeatures() {
     var bikePoint = new OpenLayers.Geometry.Point(route[0][0],route[0][1]);
@@ -124,10 +122,10 @@ function featureUnhighlighted(feature) {
 }
 
 function createBikeshareStationFeatures() {
-    $.ajax({url : apiUrl + "/REST/1.0/stations/all",
+    $.ajax({url : apiUrl + "/REST/1.0/stations/MIT",
     crossDomain : true,
     success: function(result) {
-        bikeStationList = result['stations'];
+        bikeStationList = result['mitstations'];
         for (var i = 0; i < bikeStationList.length; i ++) {
             $.ajax({url : apiUrl + "/REST/1.0/stations/info/" + bikeStationList[i].STATION_ID,
             crossDomain: true,
@@ -254,7 +252,7 @@ init : function() {
     layer_style.fillOpacity = 0.2;
     layer_style.graphicOpacity = 1;
     //42.3638057, -71.0972885
-    var lonlat = new OpenLayers.LonLat(-71.0972885, 42.3638057).transform(
+    var lonlat = new OpenLayers.LonLat(-71.0772885, 42.3638057).transform(
         new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
         new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
       );

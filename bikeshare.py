@@ -36,6 +36,28 @@ def view_all_stations():
     else:
         return render_template('500.html')
 
+@app.route('/stations/PDX')
+def view_pdx_stations():
+    apiroute = '/REST/1.0/stations/PDX'
+    r = requests.get(apiurl + apiroute)
+    if r.status_code == 200:
+        data = r.json()
+        return render_template('pdxstations.html', stations_list=data['stations'],
+            list_len=len(data))
+    else:
+        return render_template('500.html')
+
+@app.route('/stations/MIT')
+def view_mit_stations():
+    apiroute = '/REST/1.0/stations/MIT'
+    r = request.get(apiurl + apiroute)
+    if r.status_code == 200:
+        data = r.json()
+        return render_template('mitstations.html', stations_list=data['stations'],
+            list_len=len(data))
+    else:
+        return render_template('500.html')
+
 # This is a GET route to display the "view all bikes" page
 @app.route('/bikes')
 def view_all_bikes():
