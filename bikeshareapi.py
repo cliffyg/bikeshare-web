@@ -165,6 +165,8 @@ def all_stations():
 def all_stations_in_rad(lat, lon, rad):
     return all_stations()
 
+
+'''
 # Get Portland stations
 # ---------
 # Verb:     GET
@@ -183,11 +185,11 @@ def PDX_stations():
         return '{}', 500
     return jsonify({"pdxstations" : data['data']})
 
-# Get Portland stations
+# Get MIT stations
 # ---------
 # Verb:     GET
-# Route:    /REST/1.0/stations/PDX
-# Response: { "PDX_stations": [{<int:STATION_ID>, <string:STATION_NAME>,
+# Route:    /REST/1.0/stations/MIT
+# Response: { "MIT": [{<int:STATION_ID>, <string:STATION_NAME>,
 #                               <int:LATITUDE>, <int:LONGITUDE>,
 #                               <string:STREET_ADDRESS>}, ...] }
 @app.route('/REST/1.0/stations/MIT')
@@ -200,6 +202,30 @@ def MIT_stations():
         log_procerr(proc,str(e))
         return '{}', 500
     return jsonify({"mitstations" : data['data']})       
+'''
+
+# Get stations from a city
+# ---------
+# Verb:     GET
+# Route:    /REST/1.0/stations/<string:city>
+# Response: { "stations": [{<int:STATION_ID>, <string:STATION_NAME>,
+#                               <int:LATITUDE>, <int:LONGITUDE>,
+#                               <string:STREET_ADDRESS>}, ...] }
+@app.route('/REST/1.0/stations/<string:city>')
+def Stations_in_City(city):
+    db = sstoreclient.sstoreclient()
+    proc = 'GetStationsInCity'
+    args = [city]
+    try:
+        data = db.call_proc(proc, args)
+    except Exception as e:
+        log_procerr(proc,str(e))
+        return '{}', 500
+    if not data['success']:
+        log_procerr(proc,str(data['error']))
+        return '{}', 500
+    else:
+        return jsonify({"stations" : data['data']})       
 
 # Get individual station info
 # ---------
@@ -232,6 +258,7 @@ def stations_info(station_id):
             return jsonify(stations[0])
         else:
             return '{}', 404
+
 
 # Bikes
 # ========

@@ -36,6 +36,7 @@ def view_all_stations():
     else:
         return render_template('500.html')
 
+'''
 @app.route('/stations/PDX')
 def view_pdx_stations():
     apiroute = '/REST/1.0/stations/PDX'
@@ -54,6 +55,18 @@ def view_mit_stations():
     if r.status_code == 200:
         data = r.json()
         return render_template('mitstations.html', stations_list=data['stations'],
+            list_len=len(data))
+    else:
+        return render_template('500.html')
+'''
+
+@app.route('/stations/<string:city>')
+def view_city_stations(city):
+    apiroute = '/REST/1.0/stations/' + city
+    r = request.get(apiurl + apiroute)
+    if r.status_code == 200:
+        data = r.json()
+        return render_template('citystations.html', stations_list=data['stations'],
             list_len=len(data))
     else:
         return render_template('500.html')

@@ -1,0 +1,39 @@
+{%extends "base.html" %}
+
+{% block title %}Stations{% endblock %}
+
+{% block page_content %}
+<div class="widget">
+    <div class="widget-header">
+        <div class="row">
+            <div>
+                <strong>MIT Stations</strong>
+            </div>
+        </div>
+    </div>
+    <div class="widget-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <td>Station ID</td>
+                    <td>Station Name</td>
+                    <td>Address</td>
+                    <td>Location</td>
+                    <td>City</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for station in stations_list: %}
+                <tr class="row_link" href="{{ url_for('view_station', station_id=station['STATION_ID']) }}">
+                    <td>{{ station['STATION_ID'] }}</td>
+                    <td>{{ station['STATION_NAME'] }}</td>
+                    <td>{{ station['STREET_ADDRESS'] }}</td>
+                    <td>({{ station['LATITUDE'] }},{{ station['LONGITUDE'] }})</td>
+                    <td>({{ station['CITY'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

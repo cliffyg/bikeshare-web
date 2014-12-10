@@ -215,7 +215,7 @@ function createBikeshareStationFeatures() {
     $.ajax({url : apiUrl + "/REST/1.0/stations/PDX",
     crossDomain : true,
     success: function(result) {
-        bikeStationList = result['pdxstations'];
+        bikeStationList = result['stations'];
         for (var i = 0; i < bikeStationList.length; i ++) {
             $.ajax({url : apiUrl + "/REST/1.0/stations/info/" + bikeStationList[i].STATION_ID,
             crossDomain: true,
