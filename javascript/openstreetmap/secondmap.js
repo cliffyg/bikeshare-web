@@ -15,10 +15,10 @@ var stationFeatures = {};
 var iconUrl = "http://bikeshare.cs.pdx.edu/static/ic_launcher32.png";
 var apiUrl = "http://api.bikeshare.cs.pdx.edu";
 var decisionLatLong = [
-    [-122.677116394043,45.514647367543],
-    [-122.645616531372,45.5166922220549],
-    [-122.68123626709,45.5266748564834],
-    [-122.661924362183,45.519639087554]
+    [-71.079568862915,42.3495370655946],
+    [-71.1041164398193,42.3656470028119],
+    [-71.0894393920898,42.3508057143823],
+    [-71.094331741333,42.3730663325488]
 ];
 
 function createBikeFeatures() {
@@ -96,17 +96,19 @@ function getRiderData() {
 function updateRiderPoints(rider_locations) {
     bikeLayer.removeFeatures(bikeLayer.features);
     for (var i = 0; i < rider_locations.length; i ++ ) {
-        var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
-        bikePoint.transform(
-            new OpenLayers.Projection("EPSG:4326"),
-            new OpenLayers.Projection("EPSG:900913")
-        );
-        if (rider_locations[i]['USER_ID'] in riderFeatures) {
-            riderFeatures[rider_locations[i]['USER_ID']].geometry = bikePoint;
-        } else {
-            riderFeatures[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint);
+        if (rider_locations[i]['LONGITUDE'] > -100) {
+            var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
+            bikePoint.transform(
+                new OpenLayers.Projection("EPSG:4326"),
+                new OpenLayers.Projection("EPSG:900913")
+            );
+            if (rider_locations[i]['USER_ID'] in riderFeatures) {
+                riderFeatures[rider_locations[i]['USER_ID']].geometry = bikePoint;
+            } else {
+                riderFeatures[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint);
+            }
+            bikeLayer.addFeatures([riderFeatures[rider_locations[i]['USER_ID']]]);
         }
-        bikeLayer.addFeatures([riderFeatures[rider_locations[i]['USER_ID']]]);
     }
     bikeLayer.redraw();
 }

@@ -186,17 +186,19 @@ function getRiderData() {
 function updateRiderPoints(rider_locations) {
     bikeLayer.removeFeatures(bikeLayer.features);
     for (var i = 0; i < rider_locations.length; i ++ ) {
-        var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
-        bikePoint.transform(
-            new OpenLayers.Projection("EPSG:4326"),
-            new OpenLayers.Projection("EPSG:900913")
-        );
-        if (rider_locations[i]['USER_ID'] in riderFeatures) {
-            riderFeatures[rider_locations[i]['USER_ID']].geometry = bikePoint;
-        } else {
-            riderFeatures[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint);
+        if (rider_locations[i]['LONGITUDE'] < -100) {
+            var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['LONGITUDE'],rider_locations[i]['LATITUDE']);
+            bikePoint.transform(
+                new OpenLayers.Projection("EPSG:4326"),
+                new OpenLayers.Projection("EPSG:900913")
+            );
+            if (rider_locations[i]['USER_ID'] in riderFeatures) {
+                riderFeatures[rider_locations[i]['USER_ID']].geometry = bikePoint;
+            } else {
+                riderFeatures[rider_locations[i]['USER_ID']] = new OpenLayers.Feature.Vector(bikePoint);
+            }
+            bikeLayer.addFeatures([riderFeatures[rider_locations[i]['USER_ID']]]);
         }
-        bikeLayer.addFeatures([riderFeatures[rider_locations[i]['USER_ID']]]);
     }
     bikeLayer.redraw();
 }
