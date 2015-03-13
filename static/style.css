@@ -12,11 +12,27 @@
     float: left;
 }
 
+.largeWidgetP {
+    border: 1px black solid;
+    border-radius: 1em;
+    margin: 5px;
+    width: 49%;
+    float: left;
+}
+
 .widgetC {
     border: 1px black solid;
     border-radius: 1em;
     margin: 5px;
     width: 49%;
+    float: right;
+}
+
+.largeWidgetC {
+    border: 1px black solid;
+    border-radius: 1em;
+    margin: 5px;
+    width: 48%;
     float: right;
 }
 
