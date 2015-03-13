@@ -19,6 +19,7 @@
                     <td>Current Status</td>
                     <td>Current Station</td>
                     <td>Current User</td>
+                    <td>City</td>
                 </tr>
             </thead>
             <tbody>
@@ -28,6 +29,7 @@
                         <td>{{ 'riding' if (bike['CURRENT_STATUS'] == 2) else 'docked' }}</td>
                         <td>{{ bike['STATION_ID'] if (bike['STATION_ID'] >= 0) else 'N/A' }}</td>
                         <td>{{ bike['USER_ID'] if (bike['USER_ID'] >= 0) else 'N/A' }}</td>
+                        <td>{{ bike['CITY'] }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

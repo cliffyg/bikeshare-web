@@ -488,13 +488,22 @@ def get_anomalies():
 # ---------
 # Verb:     GET
 # Route:    /REST/1.0/stats
-# Response: {<int:BIKES>,<int:ACTIVE_BIKES>,<int:STATIONS>,<int:USERS>,
-#            <int:BIKES_PER_STATION}
+# Response: {<int:BIKES>,<int:ACTIVE_BIKES>,<int:STATIONS>,<int:PORSTATIONS>,
+#            <int:MITSTATIONS>,<int:USERS>,<int:BIKES_PER_STATION}
 @app.route('/REST/1.0/stats')
 def get_stats():
     stats = dict()
     stats['BIKES'], stats['ACTIVE_BIKES'] = get_bikestats()
+    #stats['ACTIVE_BIKES'] = get_bikestats()
+    #city_bikestats = get_bikesincitiesstats()
+    #stats['PORBIKES'] = citybikestats[0]
+    #stats['POR_ACTIVE_BIKES'] = citybikestats[1]
+    #stats['MITBIKES'] = citybikestats[2]
+    #stats['MIT_ACTIVE_BIKES'] = citybikestats[3]
     stats['STATIONS'] = get_stationstats()
+    city_stationstats = get_multiplestationstats()
+    stats['PORSTATIONS'] = city_stationstats[0]
+    stats['MITSTATIONS'] = city_stationstats[1]
     stats['USERS'] = get_userstats()
     stats['BIKES_PER_STATION'] = stats['BIKES'] // stats['STATIONS']
     return jsonify(stats)
@@ -524,6 +533,40 @@ def get_bikestats():
                 active = active + 1
         return len(data['data']), active
 
+# Get statistics about bikes in different cities
+def get_bikesincitiesstats():
+    db = sstoreclient.sstoreclient()
+    proc = 'Bikes'
+    try:
+        # Get data from S-Store.
+        data = db.call_proc(proc)
+    # Failure cases
+    except Exception as e:
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,str(e))
+        return '?'
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '?'
+    # Success case
+    else:
+        bikes = data['data']
+        por_active = 0
+        mit_active = 0
+        por = []
+        mit = []
+        for bike in bikes:
+            if bike['CITY'] == 'PDX':
+                por += [bike['CITY']]
+                if bike['CURRENT_STATUS'] == 2:
+                    por_active += 1
+            if bike['CITY'] == 'MIT':
+                mit += [bike['CITY']]
+                if bike['CURRENT_STATUS'] == 2:
+                    mit_active += 1
+        return len(por), por_active, len(mit), mit_active
+
 # Get statistics about stations.
 def get_stationstats():
     db = sstoreclient.sstoreclient()
@@ -543,6 +586,32 @@ def get_stationstats():
     # Success case
     else:
         return len(data['data'])
+
+def get_multiplestationstats():
+    db = sstoreclient.sstoreclient()
+    proc = 'Stations'
+    try:
+        # Get data from S-Store.
+        data = db.call_proc(proc)
+    # Failure cases
+    except Exception as e:
+        # Client failed to connect to or get data from S-Store.
+        log_procerr(proc,st(e))
+        return '?'
+    if not data['success']:
+        # DB procedure execution failed.
+        log_procerr(proc,str(data['error']))
+        return '?'
+    # Success case
+    else:
+        por = []
+        mit = []
+        for i in data['data']:
+            if i['CITY'] == "PDX":
+                por += [i['CITY']]
+            elif i['CITY'] == "MIT":
+                mit += [i['CITY']]
+        return len(por), len(mit)
 
 # Get statistics about users.
 def get_userstats():

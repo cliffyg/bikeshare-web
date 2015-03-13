@@ -19,6 +19,7 @@
                     <td>Station Name</td>
                     <td>Address</td>
                     <td>Location</td>
+                    <td>City</td>
                 </tr>
             </thead>
             <tbody>
@@ -28,6 +29,7 @@
                     <td>{{ station['STATION_NAME'] }}</td>
                     <td>{{ station['STREET_ADDRESS'] }}</td>
                     <td>({{ station['LATITUDE'] }},{{ station['LONGITUDE'] }})</td>
+                    <td>{{ stations['CITY'] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
