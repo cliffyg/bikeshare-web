@@ -100,8 +100,10 @@ def home():
     r = requests.get(apiurl + apiroute)
     if r.status_code == 200:
         data = r.json()
-        return render_template('index.html', bikes=data['BIKES'],
-            active_bikes = data['ACTIVE_BIKES'], stations=data['STATIONS'],
+        return render_template('index.html', porbikes=data['PORBIKES'],
+            por_active_bikes=data['POR_ACTIVE_BIKES'], mitbikes=data['MITBIKES'],
+            mit_active_bikes=data['MIT_ACTIVE_BIKES'], totbikes=(data['PORBIKES']+data['MITBIKES']),
+            tot_active_bikes=(data['POR_ACTIVE_BIKES']+data['MIT_ACTIVE_BIKES']), stations=data['STATIONS'],
             users=data['USERS'], bikes_per_station=data['BIKES_PER_STATION'])
     else:
         return render_template('index.html')
@@ -162,6 +164,12 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500
+
+def log_procerr(proc = '', msg = ''):
+    err = 'Exception encountered when calling S-Store procedure "'
+    err += proc + '": ' + msg
+    syslog.syslog(syslog.LOG_ERR, err)
+    return
 
 if __name__ == '__main__':
     if debug:

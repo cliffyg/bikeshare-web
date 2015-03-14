@@ -14,7 +14,7 @@ $(".row_link").click(function() {
 
 function update_stats() {
     $.getJSON(api_url + "/REST/1.0/stats", function(data) {
-        $("#tbikes").html(data['BIKES']);
+        $("#tbikes").html(data['PORBIKES']+data['MITBIKES']);
         $("#ptbikes").html(data['PORBIKES']);
         $("#ctbikes").html(data['MITBIKES']);
         $("#tstations").html(data['STATIONS']);
@@ -23,7 +23,7 @@ function update_stats() {
         $("#tbikers").html(data['USERS']);
         $("#ptbikers").html(data['USERS']);
         $("#ctbikers").html('0');
-        $("#abikes").html(data['ACTIVE_BIKES']);
+        $("#abikes").html(data['POR_ACTIVE_BIKES']+data['MIT_ACTIVE_BIKES']);
         $("#pabikes").html(data['POR_ACTIVE_BIKES']);
         $("#cabikes").html(data['MIT_ACTIVE_BIKES']);
         $("#avgbikes").html(data['BIKES_PER_STATION']); 
@@ -41,8 +41,7 @@ function check_anomalies() {
             table += "<td>Status: " + (anomaly['STATUS'] == 1 ? "Suspicious" : "Suspicious") + "</td></tr>";
         });
         table += "</table>";
-        $("#anomalies-table").html(table);
-    })
+        $("#anomalies-table").html(table); })
         .fail(function() {
             if ($("#anomalies").is(":visible")) {
                 $("#anomalies").fadeOut("fast");

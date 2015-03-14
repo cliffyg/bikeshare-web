@@ -493,19 +493,20 @@ def get_anomalies():
 @app.route('/REST/1.0/stats')
 def get_stats():
     stats = dict()
-    stats['BIKES'], stats['ACTIVE_BIKES'] = get_bikestats()
+    #stats['BIKES'], stats['ACTIVE_BIKES'] = get_bikestats()
     #stats['ACTIVE_BIKES'] = get_bikestats()
-    #city_bikestats = get_bikesincitiesstats()
-    #stats['PORBIKES'] = citybikestats[0]
-    #stats['POR_ACTIVE_BIKES'] = citybikestats[1]
-    #stats['MITBIKES'] = citybikestats[2]
-    #stats['MIT_ACTIVE_BIKES'] = citybikestats[3]
+    city_bikestats = get_bikesincitiesstats()
+    stats['PORBIKES'] = city_bikestats[0]
+    stats['POR_ACTIVE_BIKES'] = city_bikestats[1]
+    stats['MITBIKES'] = city_bikestats[2]
+    stats['MIT_ACTIVE_BIKES'] = city_bikestats[3]
     stats['STATIONS'] = get_stationstats()
     city_stationstats = get_multiplestationstats()
     stats['PORSTATIONS'] = city_stationstats[0]
     stats['MITSTATIONS'] = city_stationstats[1]
     stats['USERS'] = get_userstats()
-    stats['BIKES_PER_STATION'] = stats['BIKES'] // stats['STATIONS']
+    stats['BIKES_PER_STATION'] = stats['PORBIKES'] // stats['STATIONS']
+    log_procerr(str(stats), 'say what')
     return jsonify(stats)
 
 # Get statistics about bikes.
